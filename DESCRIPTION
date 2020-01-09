@@ -1,0 +1,24 @@
+Package: miceRanger
+Title: Multiple Imputation by Chained Equations with Random Forests
+Version: 1.0
+Authors@R: 
+    person(given = "Sam",
+           family = "Wilson",
+           role = c("aut","cre"),
+           email = "samwilson303@gmail.com")
+Maintainer: Sam Wilson <samwilson303@gmail.com>
+Description: This package performs Multiple Imputation by Chained 
+  Equations (also known as fully conditional specification) with 
+  random forests. Multiple Imputation has been shown to be a flexible 
+  method to impute missing values (Van Buuren, S. 2007a). Expanding on this,
+  random forests have been shown to be an accurate model (Stekhoven and Buhlmann, 2012) 
+  to impute missing values in datasets. They have the added benefits of
+  returning OOB error and variable importance estimates, as well as being trivially
+  parallelizable.
+Encoding: UTF-8
+LazyData: true
+License: MIT + file LICENSE
+Imports: ranger, data.table, stats, FNN, ggplot2, gridExtra, crayon, corrplot, ggpubr, DescTools, foreach
+Suggests: knitr, rmarkdown, doParallel
+RoxygenNote: 7.0.2
+VignetteBuilder: knitr

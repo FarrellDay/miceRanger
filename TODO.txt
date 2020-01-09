@@ -1,0 +1,4 @@
+
+1) CAPABILITY - Predictor matrix specification
+2) CAPABILITY - FE functions on features immediately prior to model run.
+3) CAPABILITY - Further flexability in plots
