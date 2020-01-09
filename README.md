@@ -1,7 +1,8 @@
 
 ## miceRanger: Fast Imputation with Random Forests
 
-<a href='https://github.com/FarrellDay/miceRanger'><img src='icon.png' align="right" height="250" /></a>
+<a href='https://github.com/FarrellDay/miceRanger'><img src='icon.png' align="right" height="300" /></a>
+
 `miceRanger` performs Multiple Imputation by Chained Equations (MICE)
 with random forests under fully conditional specification. It can impute
 categorical and numeric data without much setup, and has an array of
@@ -27,7 +28,7 @@ found in Stef van Buuren’s excellent online book, which you can find
       - [Running in
         Parallel](https://github.com/FarrellDay/miceRanger#Running-in-Parallel)
       - [Adding
-        Iterations/Datasets](https://github.com/FarrellDay/miceRanger#Adding-More-Iterations-Datasets)
+        Iterations/Datasets](https://github.com/FarrellDay/miceRanger#adding-more-iterationsdatasets)
   - [Diagnostic
     Plotting](https://github.com/FarrellDay/miceRanger#Diagnostic-Plotting)
       - [Imputed
@@ -156,8 +157,8 @@ seqTime <- system.time(
 ### Running in Parallel
 
 By default, `ranger` will use all available cores. However, we can still
-save a lot of time by sending each dataset imputation to a different R
-back end. To do this, we need to set up some parallel back ends and use
+save some time by sending each dataset imputation to a different R back
+end. To do this, we need to set up some parallel back ends and use
 `parallel = TRUE`. Fair warning: This causes the dataset to be copied
 for each back end, which may eat up your RAM.
 
@@ -188,7 +189,7 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 13% faster using 2 R back ends."
+    ## [1] "The parallel process ran 6% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. If we were running more datasets or
@@ -198,8 +199,8 @@ sequential process.
 ### Adding More Iterations/Datasets
 
 If you plot your data and notice that you need to may need to run more
-iterations, you can do so by simply using the `addIterations()`
-function.
+iterations, or you would like more datasets for your analysis, you can
+use the following functions:
 
 ``` r
 miceObj <- addIterations(miceObj,iters=2,verbose=FALSE)
@@ -242,7 +243,8 @@ plotCorrelations(miceObj,vars='allNumeric')
 ![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 Different correlation measures can be plotted by specifying
-`factCorrMetric` and `numbCorrMetric`.
+`factCorrMetric` and `numbCorrMetric`. See `?plotCorrelations` for more
+details.
 
 ### Center and Dispersion Convergence
 
