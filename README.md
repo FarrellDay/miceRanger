@@ -5,7 +5,7 @@
 
 Fast, memory efficient Multiple Imputation by Chained Equations (MICE)
 with random forests. It can impute categorical and numeric data without
-much setup, and has an array of diagnostic plots available. <br></br>  
+much setup, and has an array of diagnostic plots available. <br></br>
 This README contains an introduction to multiple imputation, as well as
 a thorough walkthrough of the package. More information on MICE can be
 found in Stef van Buuren’s excellent online book, which you can find
@@ -188,7 +188,7 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 17% faster using 2 R back ends."
+    ## [1] "The parallel process ran 18% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. If we were running more datasets or
