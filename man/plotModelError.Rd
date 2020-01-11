@@ -4,7 +4,12 @@
 \alias{plotModelError}
 \title{plotModelError}
 \usage{
-plotModelError(miceObj, vars = miceObj$callParams$vars, pointSize = 1, ...)
+plotModelError(
+  miceObj,
+  vars = names(miceObj$callParams$vars),
+  pointSize = 1,
+  ...
+)
 }
 \arguments{
 \item{miceObj}{an object of class miceDefs, created by the miceRanger function.}
@@ -23,13 +28,6 @@ nothing.
 Create a impDefs object, which contains information about the imputation process.
 }
 \examples{
-data(iris)
-ampIris <- amputeData(iris)
-miceObj <- miceRanger(
-  ampIris
-  , m = 2
-  , maxiter = 3
-  , verbose=FALSE
-)
-plotModelError(miceObj)
+data("sampleMiceDefs")
+plotModelError(sampleMiceDefs)
 }

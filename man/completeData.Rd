@@ -18,15 +18,6 @@ A list of imputed datasets.
 Create a impDefs object, which contains information about the imputation process.
 }
 \examples{
-data(iris)
-
-ampIris <- amputeData(iris)
-
-miceObj <- miceRanger(
-  ampIris
-  , m = 2
-  , maxiter = 2
-  , verbose=FALSE
-)
-imputedList <- completeData(miceObj)
+data("sampleMiceDefs")
+imputedList <- completeData(sampleMiceDefs)
 }

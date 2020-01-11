@@ -26,19 +26,12 @@ Add datasets to a current miceDefs object.
 Adds the same number of iterations as other datasets.
 }
 \examples{
-data(iris)
-
-ampIris <- amputeData(iris)
-
-miceObj <- miceRanger(
-    ampIris
-  , m = 2
-  , maxiter = 2
-  , verbose=FALSE
-)
+data("sampleMiceDefs")
 miceObj <- addIterations(
-    miceObj
-  , iters=2
-  , verbose=FALSE
+    sampleMiceDefs
+  , iters = 2
+  , verbose = FALSE
+  , num.threads = 1
+  , num.trees=5
 )
 }

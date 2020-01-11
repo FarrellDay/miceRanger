@@ -6,7 +6,7 @@
 \usage{
 plotDistributions(
   miceObj,
-  vars = miceObj$callParams$vars,
+  vars = names(miceObj$callParams$vars),
   title = NULL,
   dotsize = 0.5,
   ...
@@ -33,13 +33,6 @@ nothing.
 Plots the distribution of the original data beside the imputed data.
 }
 \examples{
-data(iris)
-ampIris <- amputeData(iris)
-miceObj <- miceRanger(
-  ampIris
-  , m = 2
-  , maxiter = 3
-  , verbose=FALSE
-)
-plotDistributions(miceObj)
+data("sampleMiceDefs")
+plotDistributions(sampleMiceDefs)
 }

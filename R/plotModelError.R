@@ -10,19 +10,12 @@
 #' @importFrom gridExtra grid.arrange
 #' @return nothing.
 #' @examples 
-#' data(iris)
-#' ampIris <- amputeData(iris)
-#' miceObj <- miceRanger(
-#'   ampIris
-#'   , m = 2
-#'   , maxiter = 3
-#'   , verbose=FALSE
-#' )
-#' plotModelError(miceObj)
+#' data("sampleMiceDefs")
+#' plotModelError(sampleMiceDefs)
 #' @export
 plotModelError <- function(
     miceObj
-  , vars = miceObj$callParams$vars
+  , vars = names(miceObj$callParams$vars)
   , pointSize = 1
   , ...
 ) {

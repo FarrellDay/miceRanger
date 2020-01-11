@@ -9,20 +9,13 @@
 #' @param ... other parameters passed to \code{ranger()} to control model building.
 #' @return a miceDefs object with additional iterations.
 #' @examples
-#' data(iris)
-#' 
-#' ampIris <- amputeData(iris)
-#' 
-#' miceObj <- miceRanger(
-#'     ampIris
-#'   , m = 2
-#'   , maxiter = 2
-#'   , verbose=FALSE
-#' )
+#' data("sampleMiceDefs")
 #' miceObj <- addIterations(
-#'     miceObj
-#'   , iters=2
-#'   , verbose=FALSE
+#'     sampleMiceDefs
+#'   , iters = 2
+#'   , verbose = FALSE
+#'   , num.threads = 1
+#'   , num.trees=5
 #' )
 #' @export
 addDatasets <- function(
@@ -36,6 +29,9 @@ addDatasets <- function(
   
   dat <- copy(miceObj$data)
   ds <- crayon::make_style("#4B8E78")
+  varn <- names(miceObj$callParams$vars)
+  varp <- unique(unlist(miceObj$callParams$vars))
+  vara <- unique(c(varn,varp))
   
   # Define parallelization setup
   ParMethod <- function(x) if(x) {`%dopar%`} else {`%do%`}
@@ -47,7 +43,7 @@ addDatasets <- function(
   
   
   # Apply the same changes as in miceRanger()
-  rawClasses <- sapply(dat[,miceObj$vars,with=FALSE],class)
+  rawClasses <- sapply(dat[,vara,with=FALSE],class)
   toFactr <- names(rawClasses[rawClasses=="character"])
   toNumer <- names(rawClasses[rawClasses=="integer"])
   if (any(rawClasses == "character")) {
@@ -56,8 +52,7 @@ addDatasets <- function(
   if (any(rawClasses == "integer") & miceObj$callParams$valueSelector == "value") {
     dat[,(toNumer) := lapply(.SD,as.double),.SDcols=toNumer]
   }
-  modelTypes <- ifelse(miceObj$newClasses == "factor","Classification","Regression")
-  
+  modelTypes <- ifelse(miceObj$newClasses[varn] == "factor","Classification","Regression")
   # Fill missing data with random samples from the nonmissing data.
   fillMissing <- function(vec) {
     vec[is.na(vec)] <- sample(vec[!is.na(vec)],size = sum(is.na(vec)),replace=TRUE)

@@ -6,7 +6,7 @@
 \usage{
 plotCorrelations(
   miceObj,
-  vars = miceObj$callParams$vars,
+  vars = names(miceObj$callParams$vars),
   factCorrMetric = "CramerV",
   numbCorrMetric = "pearson",
   ...
@@ -45,13 +45,6 @@ nothing.
 Create a impDefs object, which contains information about the imputation process.
 }
 \examples{
-data(iris)
-ampIris <- amputeData(iris)
-miceObj <- miceRanger(
-  ampIris
-  , m = 3
-  , maxiter = 3
-  , verbose=FALSE
-)
-plotCorrelations(miceObj)
+data("sampleMiceDefs")
+plotCorrelations(sampleMiceDefs)
 }

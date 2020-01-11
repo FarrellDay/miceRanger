@@ -11,19 +11,12 @@
 #' @importFrom DescTools Entropy
 #' @return nothing.
 #' @examples 
-#' data(iris)
-#' ampIris <- amputeData(iris)
-#' miceObj <- miceRanger(
-#'   ampIris
-#'   , m = 2
-#'   , maxiter = 3
-#'   , verbose=FALSE
-#' )
-#' plotVarConvergence(miceObj)
+#' data("sampleMiceDefs")
+#' plotVarConvergence(sampleMiceDefs)
 #' @export
 plotVarConvergence <- function(
     miceObj
-  , vars = miceObj$callParams$vars
+  , vars = names(miceObj$callParams$vars)
   , ...
 ) {
   

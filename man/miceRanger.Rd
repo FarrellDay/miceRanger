@@ -8,7 +8,7 @@ miceRanger(
   data,
   m = 5,
   maxiter = 5,
-  vars = names(data),
+  vars,
   valueSelector = c("meanMatch", "value"),
   meanMatchCandidates = pmax(round(nrow(data) * 0.01), 5),
   parallel = FALSE,
@@ -24,16 +24,16 @@ want to use as features.}
 
 \item{maxiter}{The number of iterations to run for each dataset.}
 
-\item{vars}{A character vector of the variables to impute. 
-The order of this vector will determine the order in which 
-the variables are imputed. Default is all of the variables 
-in \code{data}, in the same order they exist in the data.frame.
-Any variable in this list that contains no missing values will
-be removed, but will continue to be used as a feature. Right now,
-there is no way to stop a feature being used to impute another variable.}
+\item{vars}{A named list of character vectors representing the target/predictors.
+List names are the variables to impute, and the elements in the vectors should 
+be features used to impute that variable. The order of this list will 
+determine the order in which the variables are imputed. Default is to impute
+all of the variables in \code{data}, in the same order they exist in the 
+data.frame, using all of the columns as features. Any variable in this list that 
+contains no missing values will be removed, but will continue to be used as a feature.}
 
-\item{valueSelector}{How to select the value. Can either use mean matching or
-use the output from the regression itself. 
+\item{valueSelector}{How to select the value to be imputed from the model predictions. 
+Can either use mean matching or use the output from the regression itself. 
 \itemize{
   \item {"meanMatch"} Mean matching for regression will select one of \code{meanMatchCandidates} 
   values. These candidates had a predicted value that is closest to the predicted value for that missing sample.
@@ -87,8 +87,10 @@ ampIris <- amputeData(iris)
 miceObj <- miceRanger(
   ampIris
   , m = 2
-  , maxiter = 3
+  , maxiter = 2
   , verbose=FALSE
+  , num.threads = 1
+  , num.trees=5
 )
 
 \dontrun{
@@ -102,6 +104,7 @@ parTime <- system.time(
   miceObjPar <- miceRanger(
     ampIris
     , m=2
+    , maxiter = 2
     , parallel = TRUE
     , verbose = FALSE
   )

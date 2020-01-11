@@ -5,15 +5,15 @@
 #' want to use as features.
 #' @param m The datasets to produce
 #' @param maxiter The number of iterations to run for each dataset.
-#' @param vars A character vector of the variables to impute. 
-#' The order of this vector will determine the order in which 
-#' the variables are imputed. Default is all of the variables 
-#' in \code{data}, in the same order they exist in the data.frame.
-#' Any variable in this list that contains no missing values will
-#' be removed, but will continue to be used as a feature. Right now,
-#' there is no way to stop a feature being used to impute another variable.
-#' @param valueSelector How to select the value. Can either use mean matching or
-#' use the output from the regression itself. 
+#' @param vars A named list of character vectors representing the target/predictors.
+#' List names are the variables to impute, and the elements in the vectors should 
+#' be features used to impute that variable. The order of this list will 
+#' determine the order in which the variables are imputed. Default is to impute
+#' all of the variables in \code{data}, in the same order they exist in the 
+#' data.frame, using all of the columns as features. Any variable in this list that 
+#' contains no missing values will be removed, but will continue to be used as a feature.
+#' @param valueSelector How to select the value to be imputed from the model predictions. 
+#' Can either use mean matching or use the output from the regression itself. 
 #' \itemize{
 #'   \item {"meanMatch"} Mean matching for regression will select one of \code{meanMatchCandidates} 
 #'   values. These candidates had a predicted value that is closest to the predicted value for that missing sample.
@@ -61,8 +61,10 @@
 #' miceObj <- miceRanger(
 #'   ampIris
 #'   , m = 2
-#'   , maxiter = 3
+#'   , maxiter = 2
 #'   , verbose=FALSE
+#'   , num.threads = 1
+#'   , num.trees=5
 #' )
 #' 
 #' \dontrun{
@@ -76,6 +78,7 @@
 #'   miceObjPar <- miceRanger(
 #'     ampIris
 #'     , m=2
+#'     , maxiter = 2
 #'     , parallel = TRUE
 #'     , verbose = FALSE
 #'   )
@@ -88,7 +91,7 @@ miceRanger <- function(
     data
   , m = 5
   , maxiter = 5
-  , vars = names(data)
+  , vars
   , valueSelector = c("meanMatch","value")
   , meanMatchCandidates = pmax(round(nrow(data)*0.01),5)
   , parallel = FALSE
@@ -96,6 +99,22 @@ miceRanger <- function(
   , ...
 )
 {
+  
+  # Define Variables
+  if (missing(vars)) {
+    vars <- sapply(names(data),function(x) setdiff(names(data),x),USE.NAMES = TRUE,simplify = FALSE)
+    varp <- names(data)
+  } else {
+    if (class(vars) != "list") stop("vars must be a named list of character vectors.")
+    if (any(sapply(names(vars),function(x) x %in% vars[[x]]))) stop("A variable cannot be used to impute itself, check vars.")
+    if (any(!names(vars) %in% names(data))) stop("at least 1 name in vars is not a column in data.")
+    varp <- unique(unlist(vars))
+    if (any(!names(vars) %in% names(data))) stop("at least 1 name in vars is not a column in data.")
+    if (any(!varp %in% names(data))) stop("at least 1 predictor provided in vars is not a column in data.")
+  }
+  
+  # Get names of vars to impute
+  varn <- names(vars)
   
   # Create a copy of dataset so original is not modified.
   # This dataset is used to assign by reference throughout the process.
@@ -114,28 +133,35 @@ miceRanger <- function(
   if (!parallel & (getDoParWorkers() > 1)) if (verbose) message("parallel is set to FALSE but there is a back end registered. Process will not be run in parallel.")
   
   
-  # Missing Value Fidelity
+  # Missing Value Fidelity.
   naWhere <- is.na(dat)
-  missingCounts <- apply(naWhere,MARGIN = 2,sum)
+  if (any(apply(naWhere,2,sum) == nrow(dat))) stop("At least 1 column in data contains all missing values.")
+  missingCounts <- apply(dat[,varn,with=FALSE],MARGIN = 2,function(x) sum(is.na(x)))
   if (all(missingCounts == 0)) stop("There are no missing values in this dataset.")
-  if (any(missingCounts == nrow(dat))) stop(paste0(paste0(names(missingCounts[missingCounts==nrow(dat)]),collapse=",")," contain all missing values. Cannot impute."))
   if (any(missingCounts/nrow(dat) >= 0.9) & verbose) message("At least one variable contains less than 10% nonmissing values.")
-  takeOut <- missingCounts == 0 & names(missingCounts) %in% vars
-  takeOut <- names(takeOut[takeOut]) # That's obnoxious
-  if (length(takeOut) > 0) {
+  takeOut <- missingCounts == 0 & names(missingCounts) %in% varn
+  if (sum(takeOut) > 0) {
     if(verbose) {
       message(
           "One or more of the specified variables to impute contains no missing values. "
         , "These will remain as a predictor, however they will not be imputed. "
       )
     }
-    vars <- setdiff(vars,takeOut)
+    vars <- vars[!takeOut]
+    varn <- names(vars)
+    varp <- unique(unlist(vars))
   }
   
+  # All vars
+  vara <- unique(c(varn,varp))
+  
+  # Only keep columns that can be used.
+  if (any(!names(dat) %in% vara)) dat[,(setdiff(names(dat),vara)) := NULL]
+
   # Ranger requires factors.
   # If valueSelector == 'value', integer targets will be interpolated. Need to
   # make integers doubles for this reason.
-  rawClasses <- sapply(dat[,vars,with=FALSE],class)
+  rawClasses <- sapply(dat[,vara,with=FALSE],class)
   toFactr <- names(rawClasses[rawClasses=="character"])
   toNumer <- names(rawClasses[rawClasses=="integer"])
   if (any(rawClasses == "character")) {
@@ -152,11 +178,11 @@ miceRanger <- function(
     vec[is.na(vec)] <- sample(vec[!is.na(vec)],size = sum(is.na(vec)),replace=TRUE)
     return(vec)
   }
-  dat[,(names(dat)) := lapply(.SD,fillMissing),.SDcols=names(dat)]
+  dat[,(vara) := lapply(.SD,fillMissing),.SDcols=vara]
   
   # Keep track of our new classes and the type of model.
-  newClasses <- sapply(dat[,vars,with=FALSE],class)
-  modelTypes <- ifelse(newClasses == "factor","Classification","Regression")
+  newClasses <- sapply(dat[,vara,with=FALSE],class)
+  modelTypes <- ifelse(newClasses[varn] == "factor","Classification","Regression")
   
   startTime <- Sys.time()
   # Begin Iteration.

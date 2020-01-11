@@ -6,8 +6,6 @@
 \usage{
 plotVarImportance(
   miceObj,
-  vars = miceObj$callParams$vars,
-  title = NULL,
   display = c("Relative", "Absolute"),
   dataset = 1,
   ...
@@ -15,11 +13,6 @@ plotVarImportance(
 }
 \arguments{
 \item{miceObj}{an object of class miceDefs, created by the miceRanger function.}
-
-\item{vars}{the variables you want to plot. Default is to plot all variables. Can be a vector of
-variable names, or one of 'allNumeric' or 'allCategorical'}
-
-\item{title}{The title of the plot. Default is no title.}
 
 \item{display}{How do you want to display variable importance?
 \itemize{
@@ -38,13 +31,6 @@ nothing.
 Create a impDefs object, which contains information about the imputation process.
 }
 \examples{
-data(iris)
-ampIris <- amputeData(iris)
-miceObj <- miceRanger(
-  ampIris
-  , m = 2
-  , maxiter = 3
-  , verbose=FALSE
-)
-plotVarImportance(miceObj)
+data("sampleMiceDefs")
+plotVarImportance(sampleMiceDefs)
 }

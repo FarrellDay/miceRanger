@@ -6,7 +6,7 @@
 \usage{
 plotImputationVariance(
   miceObj,
-  vars = miceObj$callParams$vars,
+  vars = names(miceObj$callParams$vars),
   title = NULL,
   monteCarloSimulations = 10000,
   ...
@@ -38,15 +38,6 @@ plotted. The shaded area represents the samples that had a standard deviation lo
 nonmissing standard deviation for the original data.
 }
 \examples{
-\dontrun{
-data(iris)
-ampIris <- amputeData(iris)
-miceObj <- miceRanger(
-  ampIris
-  , m = 2
-  , maxiter = 3
-  , verbose=FALSE
-)
-plotImputationVariance(miceObj)
-}
+data("sampleMiceDefs")
+plotImputationVariance(sampleMiceDefs)
 }

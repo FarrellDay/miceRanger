@@ -8,20 +8,13 @@
 #' @param ... other parameters passed to \code{ranger()} to control model building.
 #' @return a miceDefs object with additional iterations.
 #' @examples
-#' data(iris)
-#' 
-#' ampIris <- amputeData(iris)
-#' 
-#' miceObj <- miceRanger(
-#'   ampIris
-#'   , m = 2
-#'   , maxiter = 2
-#'   , verbose=FALSE
-#' )
+#' data("sampleMiceDefs")
 #' miceObj <- addIterations(
-#'   miceObj
+#'     sampleMiceDefs
 #'   , iters=2
 #'   , verbose=FALSE
+#'   , num.threads = 1
+#'   , num.trees=5
 #' )
 #' @export
 addIterations <- function(
@@ -46,7 +39,7 @@ addIterations <- function(
 
   
   # Apply the same changes as in miceRanger()
-  rawClasses <- sapply(dat[,miceObj$vars,with=FALSE],class)
+  rawClasses <- miceObj$rawClasses
   toFactr <- names(rawClasses[rawClasses=="character"])
   toNumer <- names(rawClasses[rawClasses=="integer"])
   if (any(rawClasses == "character")) {

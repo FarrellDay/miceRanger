@@ -5,17 +5,8 @@
 #' @importFrom stats complete.cases
 #' @return A list of imputed datasets.
 #' @examples
-#' data(iris)
-#' 
-#' ampIris <- amputeData(iris)
-#' 
-#' miceObj <- miceRanger(
-#'   ampIris
-#'   , m = 2
-#'   , maxiter = 2
-#'   , verbose=FALSE
-#' )
-#' imputedList <- completeData(miceObj)
+#' data("sampleMiceDefs")
+#' imputedList <- completeData(sampleMiceDefs)
 #' @export
 completeData <- function(
     miceObj
@@ -25,6 +16,7 @@ completeData <- function(
   if (class(miceObj) != "miceDefs") stop("miceObj should be an object of class miceDefs.")
   
   dat <- copy(miceObj$data)
+  varn <- names(miceObj$callParams$vars)
   
   intVar <- names(miceObj$rawClasses[miceObj$rawClasses == "integer"])
   if(any(miceObj$rawClasses == "integer") & miceObj$callParams$valueSelector == "value") {
@@ -36,7 +28,7 @@ completeData <- function(
       datasets
     , function(x) {
       dat <- copy(dat)
-      for (v in miceObj$callParams$vars) {
+      for (v in varn) {
         dat[miceObj$naWhere[,v],(v) := miceObj$finalImps[[x]][[v]]]
       }
       return(dat)
@@ -47,7 +39,17 @@ completeData <- function(
   
   names(completeSets) <- paste0("Dataset_",datasets)
   
-  if (any(sapply(completeSets,function(x) mean(complete.cases(x))) != 1)) stop("There was a problem completing the dataset. Please report this with a reproduceable example to https://github.com/farrellday/miceRanger/issues")
+  if (
+    any(
+      sapply(
+          completeSets
+        , function(x) mean(
+            complete.cases(
+              x[,varn,with=FALSE]
+            )
+        )
+      ) != 1)
+    ) stop("There was a problem completing the dataset. Please report this with a reproduceable example to https://github.com/farrellday/miceRanger/issues")
   
   return(completeSets)
   

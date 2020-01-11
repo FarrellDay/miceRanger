@@ -32,15 +32,13 @@ Maintainer: 'Sam Wilson <samwilson303@gmail.com>'
 New submission
 
 Possibly mis-spelled words in DESCRIPTION:
-  Buhlmann (14:73)
-  Buuren (13:40)
-  OOB (16:13)
-  Stekhoven (14:59)
-  parallelizable (17:3)
+  Buhlmann (16:3)
+  Buuren (14:3)
+  Stekhoven (15:44)
   
 ...
 ```  
-The mis-spelled words listed are not a problem.
+The mis-spelled words listed are names.
 
 
 ### Rhub
@@ -54,15 +52,8 @@ devtools::check_rhub()
 Maintainer: 'Sam Wilson <samwilson303@gmail.com>'
 New submission
 Possibly mis-spelled words in DESCRIPTION:
-
-  Buhlmann (14:73)
-  Buuren (13:40)
-  OOB (16:13)
-  Stekhoven (14:59)
-  parallelizable (17:3)
-
-The Description field should not start with the package name,
-  'This package' or similar.
+  Buhlmann (16:3)
+  Buuren (14:3)
+  Stekhoven (15:44)
 ```
-The description does not contain the package name.  
-The mis-spelled words listed are not a problem.
+The mis-spelled words are names.

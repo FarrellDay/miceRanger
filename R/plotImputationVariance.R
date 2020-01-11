@@ -17,21 +17,12 @@
 #' @importFrom ggplot2 position_nudge geom_area xlab ylab ggtitle scale_x_discrete geom_vline
 #' @return nothing.
 #' @examples 
-#' \dontrun{
-#' data(iris)
-#' ampIris <- amputeData(iris)
-#' miceObj <- miceRanger(
-#'   ampIris
-#'   , m = 2
-#'   , maxiter = 3
-#'   , verbose=FALSE
-#' )
-#' plotImputationVariance(miceObj)
-#' }
+#' data("sampleMiceDefs")
+#' plotImputationVariance(sampleMiceDefs)
 #' @export
 plotImputationVariance <- function(
     miceObj
-  , vars = miceObj$callParams$vars
+  , vars = names(miceObj$callParams$vars)
   , title=NULL
   , monteCarloSimulations = 10000
   , ...

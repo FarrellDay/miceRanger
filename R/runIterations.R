@@ -20,10 +20,14 @@ runIterations <- function(
   , ...
 ) {
   
-  # Define parallelization setup
+  # Define parallelization setup. Consider exporting entire
+  # environment to this function in the future.
   ParMethod <- function(x) if(x) {`%dopar%`} else {`%do%`}
   `%op%` <- ParMethod(parallel)
   ds <- crayon::make_style("#4B8E78")
+  varn <- names(vars)
+  varp <- unique(unlist(vars))
+  vara <- unique(c(varn,varp))
   
   # Run iterations
   dsl <- foreach(
@@ -56,13 +60,15 @@ runIterations <- function(
       
       if(verbose) cat("iteration",iter + oldIt,"\t")
       
-      for (impVar in vars) {
+      for (impVar in varn) {
+
+        algCols <- c(impVar,vars[[impVar]])
 
         if(verbose) cat(" |",impVar)
         missIndx <- naWhere[,impVar]
         returnProb <- modelTypes[impVar] == "Classification" & valueSelector == "meanMatch"
         model <- ranger(
-          data = dats[!missIndx]
+          data = dats[!missIndx,algCols,with=FALSE]
           , dependent.variable.name = impVar
           , importance = "impurity"
           , probability = returnProb
@@ -83,10 +89,11 @@ runIterations <- function(
       
       # Now that the models have been run for this iteration...
       
-      # Add to iteration importance list
+      # Add to iteration importance list. Sort names for pretty plotting.
       dsImport[[iter]] <- rbindlist(iterImport,fill = TRUE)
-      dsImport[[iter]]$variable <- vars
-      setcolorder(dsImport[[iter]],c("variable",vars))
+      toOrder <- names(dsImport[[iter]])
+      dsImport[[iter]]$variable <- varn
+      setcolorder(dsImport[[iter]],c("variable",toOrder[order(match(toOrder,vara))]))
       
       # Add to iteration model error list
       dsError[[iter]] <- iterError
@@ -105,7 +112,7 @@ runIterations <- function(
     names(dsImport) <- paste0("Iteration_",1:maxiter + oldIt)
     dsError <- rbindlist(dsError)
     dsError$iteration <- 1:maxiter + oldIt
-    setcolorder(dsError,c("iteration",vars))
+    setcolorder(dsError,c("iteration",varn))
     
     return(
       list(

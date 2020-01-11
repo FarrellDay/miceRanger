@@ -10,7 +10,7 @@ vignette: >
 ---
 
 ## miceRanger: Fast Imputation with Random Forests
-```miceRanger``` performs Multiple Imputation by Chained Equations (MICE) with random forests under fully conditional specification. It can impute categorical and numeric data without much setup, and has an array of diagnostic plots available.  
+```miceRanger``` performs Multiple Imputation by Chained Equations (MICE) with random forests. It can impute categorical and numeric data without much setup, and has an array of diagnostic plots available.  
 This README contains an introduction to multiple imputation, as well as a thorough walkthrough of the package. More information on MICE can be found in Stef van Buuren's excellent online book, which you can find [here](https://stefvanbuuren.name/fimd/ch-introduction.html).
 
 ## The MICE Algorithm

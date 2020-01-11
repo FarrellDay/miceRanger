@@ -4,7 +4,7 @@
 \alias{plotVarConvergence}
 \title{plotVarConvergence}
 \usage{
-plotVarConvergence(miceObj, vars = miceObj$callParams$vars, ...)
+plotVarConvergence(miceObj, vars = names(miceObj$callParams$vars), ...)
 }
 \arguments{
 \item{miceObj}{an object of class miceDefs, created by the miceRanger function.}
@@ -21,13 +21,6 @@ nothing.
 Create a impDefs object, which contains information about the imputation process.
 }
 \examples{
-data(iris)
-ampIris <- amputeData(iris)
-miceObj <- miceRanger(
-  ampIris
-  , m = 2
-  , maxiter = 3
-  , verbose=FALSE
-)
-plotVarConvergence(miceObj)
+data("sampleMiceDefs")
+plotVarConvergence(sampleMiceDefs)
 }

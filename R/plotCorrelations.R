@@ -28,19 +28,12 @@
 #' @importFrom DescTools CramerV
 #' @return nothing.
 #' @examples 
-#' data(iris)
-#' ampIris <- amputeData(iris)
-#' miceObj <- miceRanger(
-#'   ampIris
-#'   , m = 3
-#'   , maxiter = 3
-#'   , verbose=FALSE
-#' )
-#' plotCorrelations(miceObj)
+#' data("sampleMiceDefs")
+#' plotCorrelations(sampleMiceDefs)
 #' @export
 plotCorrelations <- function(
     miceObj
-  , vars = miceObj$callParams$vars
+  , vars = names(miceObj$callParams$vars)
   , factCorrMetric = "CramerV"
   , numbCorrMetric = "pearson"
   , ...

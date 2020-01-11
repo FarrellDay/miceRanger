@@ -13,34 +13,23 @@
 #' @importFrom ggplot2 ggplot geom_density aes_string ggplotGrob geom_dotplot geom_bar
 #' @return nothing.
 #' @examples 
-#' data(iris)
-#' ampIris <- amputeData(iris)
-#' miceObj <- miceRanger(
-#'   ampIris
-#'   , m = 2
-#'   , maxiter = 3
-#'   , verbose=FALSE
-#' )
-#' plotDistributions(miceObj)
+#' data("sampleMiceDefs")
+#' plotDistributions(sampleMiceDefs)
 #' @export
 plotDistributions <- function(
     miceObj
-  , vars = miceObj$callParams$vars
+  , vars = names(miceObj$callParams$vars)
   , title=NULL
   , dotsize = 0.5
   , ...
 ) {
   
-  #vars <- "Foundation"
-  #vars <- "allNumeric"
-  #vars <- "allCategorical"
-  #require(ggplot2)
-  #require(ggpubr)
+  newClasses <- miceObj$newClasses
   
   if (vars[[1]] == 'allCategorical') vars <- names(miceObj$newClasses[miceObj$newClasses == "factor"])
   if (vars[[1]] == 'allNumeric') vars <- names(miceObj$newClasses[miceObj$newClasses != "factor"])
-  facVars <- miceObj$newClasses[vars][miceObj$newClasses[vars] == "factor"]
-  numVars <- miceObj$newClasses[vars][miceObj$newClasses[vars] != "factor"]
+  facVars <- newClasses[names(newClasses) %in% vars][miceObj$newClasses[vars] == "factor"]
+  numVars <- newClasses[vars][miceObj$newClasses[vars] != "factor"]
 
   if (length(facVars) > 0) {
     facList <- lapply(names(facVars), function(var) {
