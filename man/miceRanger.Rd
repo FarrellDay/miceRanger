@@ -40,8 +40,8 @@ Can either use mean matching or use the output from the regression itself.
   Mean matching for classification will select a level based on a random sampling weighted by the class
   probability output by the random forest.
   \item {"value"} Returns the predicted output from the random forest. This will be the predicted
-  class for classification, and the value for regression. Allows interpolation in regression. Not
-  recommended, unless you have a specific reason.
+  class for classification, and the value for regression. Allows interpolation in regression.
+  Can produce better imputations if the data is not very skewed or otherwise nicely distributed.
 }}
 
 \item{meanMatchCandidates}{Used for regression. Take a random value from the most similair N values
@@ -61,7 +61,7 @@ back end when running in parallel.}
 a miceDefs object, containing the following:
 \item{callParams}{The parameters of the object.}
 \item{data}{The original data provided by the user.}
-\item{naWhere}{Logical index of missingness, same dimensions as data.}
+\item{naWhere}{Logical index of missing data, having the same dimensions as data.}
 \item{missingCounts}{The number of missing values for each variable}
 \item{rawClasses}{The original classes provided in \code{data}}
 \item{newClasses}{The new classes of the returned dataset. Classes can be changed if necessary.}
@@ -75,7 +75,7 @@ a miceDefs object, containing the following:
   specified datasets and iterations. Does not include any setup time.}
 }
 \description{
-Performs Multiple Imputation with Chained Equations (MICE).
+Performs Multiple Imputation by Chained Equations (MICE).
 Creates a miceDefs object, which contains information about the imputation process.
 }
 \examples{
@@ -93,8 +93,11 @@ miceObj <- miceRanger(
   , num.trees=5
 )
 
-\dontrun{
+\donttest{
 # Run in parallel
+data(iris)
+ampIris <- amputeData(iris)
+
 library(doParallel)
 cl <- makeCluster(2)
 registerDoParallel(cl)

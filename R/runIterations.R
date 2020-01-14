@@ -17,6 +17,7 @@ runIterations <- function(
   , miceObj = NULL
   , oldm = 0
   , oldIt = 0
+  , startTime
   , ...
 ) {
   
@@ -103,7 +104,15 @@ runIterations <- function(
       
       rm(iterImps,iterError,iterImport)
       
-      if(verbose) cat("\n")
+      if(verbose) {
+        cat("\n")
+        benTime <- Sys.time()
+        secDiff <- as.numeric(difftime(benTime,startTime,units="secs"))
+        # Only show this message if the expected wait time is over 5 min.
+        if (iter == 1 & dataSet == 1 & as.numeric(maxiter*m*secDiff) > 300) {
+          cat("\nExpected Time of Completion:",as.character(startTime + as.numeric(maxiter*m*secDiff)),"\n\n")
+        }
+      }
       
     }
     

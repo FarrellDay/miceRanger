@@ -52,6 +52,7 @@ addIterations <- function(
 
   # Run iterations for specified iterations. Continue from miceObj.
   startTime <- Sys.time()
+  if (verbose) cat("\nProcess started at",as.character(startTime),"\n")
   datSetList <- runIterations(
       dat = NULL
     , m = miceObj$callParams$m
@@ -68,6 +69,7 @@ addIterations <- function(
     , miceObj = miceObj
     , oldm = 0
     , oldIt = miceObj$callParams$maxiter
+    , startTime
     , ...
   )
   endTime <- Sys.time()

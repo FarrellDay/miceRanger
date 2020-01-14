@@ -4,6 +4,8 @@
 #' @param miceObj A miceDefs object created by \code{miceRanger}.
 #' @param datasets The datasets to return. Can be a number, of a numeric vector.
 #' @param var The variable to return the imputations for.
+#' @return A matrix of imputations for a single variable. 
+#' Each column represents a different dataset.
 #' @examples
 #' data("sampleMiceDefs")
 #' getVarImps(sampleMiceDefs,"Sepal.Width")

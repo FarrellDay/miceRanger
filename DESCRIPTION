@@ -7,13 +7,12 @@ Authors@R:
            role = c("aut","cre"),
            email = "samwilson303@gmail.com")
 Maintainer: Sam Wilson <samwilson303@gmail.com>
-Description: Multiple Imputation by Chained Equations 
-  (also known as fully conditional specification) with 
-  random forests. Multiple Imputation has been shown to 
-  be a flexible method to impute missing values (Van 
-  Buuren, S. 2007a). Expanding on this, random forests 
-  have been shown to be an accurate model (Stekhoven and 
-  Buhlmann, 2012) to impute missing values in datasets. 
+Description: Multiple Imputation has been shown to 
+  be a flexible method to impute missing values by 
+  Van Buuren (2007) <doi:10.1177/0962280206074463>. 
+  Expanding on this, random forests have been shown 
+  to be an accurate model by Stekhoven and Buhlmann 
+  <arXiv:1105.0828> to impute missing values in datasets. 
   They have the added benefits of returning out of bag 
   error and variable importance estimates, as well as 
   being simple to run in parallel.

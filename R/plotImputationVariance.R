@@ -27,10 +27,7 @@ plotImputationVariance <- function(
   , monteCarloSimulations = 10000
   , ...
 ) {
-  
-  # require(ggplot2)
-  # require(ggpubr)
-  
+
   if (vars[[1]] == 'allCategorical') vars <- names(miceObj$newClasses[miceObj$newClasses == "factor"])
   if (vars[[1]] == 'allNumeric') vars <- names(miceObj$newClasses[miceObj$newClasses != "factor"])
   
@@ -58,7 +55,6 @@ plotImputationVariance <- function(
     facList <- lapply(
       names(facVars)
     , function(v) {
-      v <- names(facVars)[[1]]
       if(sum(miceObj$naWhere[,v]) ==1 ) stop(paste0(v," was only imputed once. Cannot plot density of the variance of a single imputation."))
       imps <- as.data.table(lapply(miceObj$finalImps,function(x) x[[v]]))
       
@@ -134,11 +130,11 @@ plotImputationVariance <- function(
   if (length(facList) == 0) {
     ggarrange(plotlist=numList,...)
   } else if (length(numList) == 0) {
-    ggarrange(plotlist=facList,...)
+    ggarrange(plotlist=facList,common.legend=TRUE,...)
   } else {
     ggarrange(
       plotlist=list(
-        if (length(facList) > 0) ggarrange(plotlist=facList) else NULL
+        if (length(facList) > 0) ggarrange(plotlist=facList,common.legend=TRUE) else NULL
         , if (length(numList) > 0) ggarrange(plotlist=numList) else NULL
       )
       , ...

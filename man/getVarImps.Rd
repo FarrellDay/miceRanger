@@ -13,6 +13,10 @@ getVarImps(miceObj, datasets = 1:miceObj$callParams$m, var)
 
 \item{var}{The variable to return the imputations for.}
 }
+\value{
+A matrix of imputations for a single variable. 
+Each column represents a different dataset.
+}
 \description{
 Returns all of the imputations for the specified
 datasets and variable.

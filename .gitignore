@@ -6,3 +6,4 @@ miceRanger.Rproj
 README.Rmd
 LICENSE.md
 .Rbuildignore
+benchmarks

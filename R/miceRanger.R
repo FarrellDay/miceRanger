@@ -1,5 +1,5 @@
 #' @title miceRanger
-#' @description Performs Multiple Imputation with Chained Equations (MICE).
+#' @description Performs Multiple Imputation by Chained Equations (MICE).
 #' Creates a miceDefs object, which contains information about the imputation process.
 #' @param data The data to be imputed. Can contain variables that are not going to be imputed, which you
 #' want to use as features.
@@ -20,8 +20,8 @@
 #'   Mean matching for classification will select a level based on a random sampling weighted by the class
 #'   probability output by the random forest.
 #'   \item {"value"} Returns the predicted output from the random forest. This will be the predicted
-#'   class for classification, and the value for regression. Allows interpolation in regression. Not
-#'   recommended, unless you have a specific reason.
+#'   class for classification, and the value for regression. Allows interpolation in regression.
+#'   Can produce better imputations if the data is not very skewed or otherwise nicely distributed.
 #' }
 #' @param meanMatchCandidates Used for regression. Take a random value from the most similair N values
 #' in the dataset. Defaults to 1 percent of the rows in the dataset, with a minimum of 5.
@@ -40,7 +40,7 @@
 #' @return a miceDefs object, containing the following:
 #' \item{callParams}{The parameters of the object.}
 #' \item{data}{The original data provided by the user.}
-#' \item{naWhere}{Logical index of missingness, same dimensions as data.}
+#' \item{naWhere}{Logical index of missing data, having the same dimensions as data.}
 #' \item{missingCounts}{The number of missing values for each variable}
 #' \item{rawClasses}{The original classes provided in \code{data}}
 #' \item{newClasses}{The new classes of the returned dataset. Classes can be changed if necessary.}
@@ -67,8 +67,11 @@
 #'   , num.trees=5
 #' )
 #' 
-#' \dontrun{
+#' \donttest{
 #' # Run in parallel
+#' data(iris)
+#' ampIris <- amputeData(iris)
+#' 
 #' library(doParallel)
 #' cl <- makeCluster(2)
 #' registerDoParallel(cl)
@@ -185,6 +188,7 @@ miceRanger <- function(
   modelTypes <- ifelse(newClasses[varn] == "factor","Classification","Regression")
   
   startTime <- Sys.time()
+  if (verbose) cat("\nProcess started at",as.character(startTime),"\n")
   # Begin Iteration.
   datSetList <- runIterations(
       dat
@@ -199,8 +203,10 @@ miceRanger <- function(
     , ParMethod
     , parallel
     , mco
+    , miceObj = NULL
     , oldm = 0
     , oldIt = 0
+    , startTime
     , ...
   )
   endTime <- Sys.time()
@@ -227,7 +233,8 @@ miceRanger <- function(
   finalImport <- lapply(allImport,function(x) x[[length(x)]])
   finalError <- rbindlist(lapply(allError,function(x) x[nrow(x)]))
   setnames(finalError,"iteration","dataset")
-  finalError[,`:=` ("dataset" = 1:m)]
+  finalError$dataset <- 1:m
+  
   
   miceDefs <- list()
   miceDefs$callParams <- list()
@@ -247,7 +254,7 @@ miceRanger <- function(
   miceDefs$finalImps <- finalImps
   miceDefs$finalImport <- finalImport
   miceDefs$finalError <- finalError
-  miceDefs$imputationTime <- round(as.numeric(endTime - startTime))
+  miceDefs$imputationTime <- round(as.numeric(difftime(endTime,startTime,units="secs")))
   
   class(miceDefs) <- "miceDefs"
   

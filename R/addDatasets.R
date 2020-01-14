@@ -62,6 +62,7 @@ addDatasets <- function(
   
   # Add specified datasets.
   startTime <- Sys.time()
+  if (verbose) cat("\nProcess started at",as.character(startTime),"\n")
   datSetList <- runIterations(
       dat = dat
     , m = datasets
@@ -75,8 +76,10 @@ addDatasets <- function(
     , ParMethod = ParMethod
     , parallel = parallel
     , mco = mco
+    , miceObj = NULL
     , oldm = miceObj$callParams$m
     , oldIt = 0
+    , startTime
     , ...
   )
   endTime <- Sys.time()
