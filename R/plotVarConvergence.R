@@ -10,7 +10,7 @@
 #' @importFrom stats sd
 #' @importFrom ggpubr ggarrange theme_classic2 annotate_figure text_grob
 #' @importFrom DescTools Entropy
-#' @return nothing.
+#' @return an object of class \code{ggarrange}.
 #' @examples 
 #' data("sampleMiceDefs")
 #' plotVarConvergence(sampleMiceDefs)
@@ -21,14 +21,15 @@ plotVarConvergence <- function(
   , ...
 ) {
   
-  if (miceObj$callParams$maxiter == 1) stop("There is only 1 iteration, need at least 2 iterations to plot convergence.")
-  
-  if (vars[[1]] == 'allCategorical') vars <- names(miceObj$newClasses[miceObj$newClasses == "factor"])
-  if (vars[[1]] == 'allNumeric') vars <- names(miceObj$newClasses[miceObj$newClasses != "factor"])
-  
   selTheme <- theme_classic2()
   m <- miceObj$callParams$m
   maxiter <- miceObj$callParams$maxiter
+  varn <- names(miceObj$callParams$vars)
+  newClasses <- miceObj$newClasses[varn]
+  
+  if (maxiter == 1) stop("There is only 1 iteration, need at least 2 iterations to plot convergence.")
+  if (vars[[1]] == 'allCategorical') vars <- names(newClasses[newClasses == "factor"])
+  if (vars[[1]] == 'allNumeric') vars <- names(newClasses[newClasses != "factor"])
   
   pList <- lapply(
       vars

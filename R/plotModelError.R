@@ -8,7 +8,7 @@
 #' @importFrom data.table data.table
 #' @importFrom ggplot2 ggplot geom_line
 #' @importFrom gridExtra grid.arrange
-#' @return nothing.
+#' @return an object of class \code{ggarrange}.
 #' @examples 
 #' data("sampleMiceDefs")
 #' plotModelError(sampleMiceDefs)
@@ -20,9 +20,11 @@ plotModelError <- function(
   , ...
 ) {
   
+  varn <- names(miceObj$callParams$vars)
+  newClasses <- miceObj$newClasses[varn]
   
-  if (vars[[1]] == 'allCategorical') vars <- names(miceObj$newClasses[miceObj$newClasses == "factor"])
-  if (vars[[1]] == 'allNumeric') vars <- names(miceObj$newClasses[miceObj$newClasses != "factor"])
+  if (vars[[1]] == 'allCategorical') vars <- names(newClasses[newClasses == "factor"])
+  if (vars[[1]] == 'allNumeric') vars <- names(newClasses[newClasses != "factor"])
   
   pList <- lapply(
       vars

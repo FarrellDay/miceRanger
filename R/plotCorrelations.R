@@ -1,32 +1,29 @@
 #' @title plotCorrelations
-#' @description Plot the correlation between every combination of datasets for each variable.
+#' @description Plot the correlation of imputed values between every combination of datasets for each variable.
 #' @param miceObj an object of class miceDefs, created by the miceRanger function.
 #' @param vars the variables you want to plot. Default is to plot all variables. Can be a vector of
 #' variable names, or one of 'allNumeric' or 'allCategorical'
 #' @param factCorrMetric The correlation metric for categorical variables. Can be one of:
 #' \itemize{
-#'   \item {CramerV} Cramer's V correlation metric.
-#'   \item {Chisq} Chi Square test statistic.
-#'   \item {TschuprowT} Tschuprow's T correlation metric.
-#'   \item {Phi} (Binary Variables Only) Phi coefficient.
-#'   \item {YuleY} (Binary Variables Only) Yule's Y, also known as coefficient of colligation
-#'   \item {YuleQ} (Binary Variables Only) Yule's Q, related to Yule's Y by Q=2Y/(1+Y^2)
+#'   \item {\code{"CramerV"}} Cramer's V correlation metric.
+#'   \item {\code{"Chisq"}} Chi Square test statistic.
+#'   \item {\code{"TschuprowT"}} Tschuprow's T correlation metric.
+#'   \item {\code{"Phi"}} (Binary Variables Only) Phi coefficient.
+#'   \item {\code{"YuleY"}} (Binary Variables Only) Yule's Y, also known as coefficient of colligation
+#'   \item {\code{"YuleQ"}} (Binary Variables Only) Yule's Q, related to Yule's Y by Q=2Y/(1+Y^2)
 #' }
 #' @param numbCorrMetric The correlation metric for numeric variables. Can be one of:
 #' \itemize{
-#'   \item {pearson} Pearson's Correlation Coefficient
-#'   \item {spearman} Spearman's Rank Correlation Coefficient
-#'   \item {kendall} Kendall's Rank Correlation Coefficient
-#'   \item {Rsquared} R-squared
+#'   \item {\code{"pearson"}} Pearson's Correlation Coefficient
+#'   \item {\code{"spearman"}} Spearman's Rank Correlation Coefficient
+#'   \item {\code{"kendall"}} Kendall's Rank Correlation Coefficient
+#'   \item {\code{"Rsquared"}} R-squared
 #' }
 #' @param ... Other arguments to pass to grid.arrange()
-#' @importFrom gridExtra grid.arrange arrangeGrob
 #' @importFrom ggplot2 ggplot geom_point ylab aes theme aes_string geom_boxplot
-#' @importFrom stats cor
 #' @importFrom utils combn
 #' @importFrom ggpubr ggarrange theme_classic2
-#' @importFrom DescTools CramerV
-#' @return nothing.
+#' @return an object of class \code{ggarrange}.
 #' @examples 
 #' data("sampleMiceDefs")
 #' plotCorrelations(sampleMiceDefs)
@@ -39,8 +36,11 @@ plotCorrelations <- function(
   , ...
 ) {
   
-  if (vars[[1]] == 'allCategorical') vars <- names(miceObj$newClasses[miceObj$newClasses == "factor"])
-  if (vars[[1]] == 'allNumeric') vars <- names(miceObj$newClasses[miceObj$newClasses != "factor"])
+  varn <- names(miceObj$callParams$vars)
+  newClasses <- miceObj$newClasses[varn]
+  
+  if (vars[[1]] == 'allCategorical') vars <- names(newClasses[newClasses == "factor"])
+  if (vars[[1]] == 'allNumeric') vars <- names(newClasses[newClasses != "factor"])
   
   selTheme <- theme_classic2()
   m <- miceObj$callParams$m
@@ -55,9 +55,8 @@ plotCorrelations <- function(
   pList <- lapply(
     vars
     , function(var) {
-      #var <- vars[[1]]
       # Type of plot depends on variable type.
-      if (miceObj$newClasses[var] == "factor") {
+      if (newClasses[var] == "factor") {
         varClass <- "factor"
         ylb <- paste0(var,catCorrMet$ylb)
       } else {
@@ -107,13 +106,11 @@ plotCorrelations <- function(
       iterFlipped$variable <- factor(as.numeric(iterFlipped[,get("variable")]))
       
       return(
-        ggplotGrob(
           ggplot(iterFlipped,aes_string(x="variable",y="value")) + 
             geom_boxplot() +
             ylab(ylb) +
             selTheme +
             xlab("Iteration")
-        )
       )
     }
   )

@@ -4,14 +4,13 @@
 #' @param vars the variables you want to plot. Default is to plot all variables. Can be a vector of
 #' variable names, or one of 'allNumeric' or 'allCategorical'
 #' @param title The title of the plot. Default is no title.
-#' @param dotsize Passed to geom_dotplot(). Depending on the number of graphs plotted, you may want to
+#' @param dotsize Passed to \code{geom_dotplot()}. Depending on the number of graphs plotted, you may want to
 #' change the dot size for categorical variables.
-#' @param ... additional parameters passed to ggarrange when combining numeric and categorical
-#' plots.
+#' @param ... additional parameters passed to \code{ggarrange()}.
 #' @importFrom stats density
 #' @importFrom data.table melt setnames .N
 #' @importFrom ggplot2 ggplot geom_density aes_string ggplotGrob geom_dotplot geom_bar
-#' @return nothing.
+#' @return an object of class \code{ggarrange}.
 #' @examples 
 #' data("sampleMiceDefs")
 #' plotDistributions(sampleMiceDefs)
@@ -24,12 +23,13 @@ plotDistributions <- function(
   , ...
 ) {
   
-  newClasses <- miceObj$newClasses
+  varn <- names(miceObj$callParams$vars)
+  newClasses <- miceObj$newClasses[varn]
   
-  if (vars[[1]] == 'allCategorical') vars <- names(miceObj$newClasses[miceObj$newClasses == "factor"])
-  if (vars[[1]] == 'allNumeric') vars <- names(miceObj$newClasses[miceObj$newClasses != "factor"])
-  facVars <- newClasses[names(newClasses) %in% vars][miceObj$newClasses[vars] == "factor"]
-  numVars <- newClasses[vars][miceObj$newClasses[vars] != "factor"]
+  if (vars[[1]] == 'allCategorical') vars <- names(newClasses[newClasses == "factor"])
+  if (vars[[1]] == 'allNumeric') vars <- names(newClasses[newClasses != "factor"])
+  facVars <- newClasses[names(newClasses) %in% vars][newClasses[vars] == "factor"]
+  numVars <- newClasses[vars][newClasses[vars] != "factor"]
 
   if (length(facVars) > 0) {
     facList <- lapply(names(facVars), function(var) {
@@ -62,20 +62,8 @@ plotDistributions <- function(
     })
   } else numList <- NULL
   
-  
-  if (length(facList) == 0) {
-    ggarrange(plotlist=numList,...)
-  } else if (length(numList) == 0) {
-     ggarrange(plotlist=facList,...)
-  } else {
-    ggarrange(
-      plotlist=list(
-        if (length(facList) > 0) ggarrange(plotlist=facList) else NULL
-        , if (length(numList) > 0) ggarrange(plotlist=numList) else NULL
-      )
-      , ...
-    )
-  }
+  pList <- c(numList,facList)
+  ggarrange(plotlist=pList,...)
   
 }
 utils::globalVariables('.')
