@@ -22,7 +22,7 @@ variable names, or one of 'allNumeric' or 'allCategorical'}
 \item{...}{other arguments passed to \code{grid.arrange()}}
 }
 \value{
-nothing.
+an object of class \code{ggarrange}.
 }
 \description{
 Plot the Out Of Bag model error for specified variables over all tierations.

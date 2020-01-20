@@ -20,14 +20,13 @@ variable names, or one of 'allNumeric' or 'allCategorical'}
 
 \item{title}{The title of the plot. Default is no title.}
 
-\item{dotsize}{Passed to geom_dotplot(). Depending on the number of graphs plotted, you may want to
+\item{dotsize}{Passed to \code{geom_dotplot()}. Depending on the number of graphs plotted, you may want to
 change the dot size for categorical variables.}
 
-\item{...}{additional parameters passed to ggarrange when combining numeric and categorical
-plots.}
+\item{...}{additional parameters passed to \code{ggarrange()}.}
 }
 \value{
-nothing.
+an object of class \code{ggarrange}.
 }
 \description{
 Plots the distribution of the original data beside the imputed data.

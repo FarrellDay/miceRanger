@@ -20,29 +20,29 @@ variable names, or one of 'allNumeric' or 'allCategorical'}
 
 \item{factCorrMetric}{The correlation metric for categorical variables. Can be one of:
 \itemize{
-  \item {CramerV} Cramer's V correlation metric.
-  \item {Chisq} Chi Square test statistic.
-  \item {TschuprowT} Tschuprow's T correlation metric.
-  \item {Phi} (Binary Variables Only) Phi coefficient.
-  \item {YuleY} (Binary Variables Only) Yule's Y, also known as coefficient of colligation
-  \item {YuleQ} (Binary Variables Only) Yule's Q, related to Yule's Y by Q=2Y/(1+Y^2)
+  \item {\code{"CramerV"}} Cramer's V correlation metric.
+  \item {\code{"Chisq"}} Chi Square test statistic.
+  \item {\code{"TschuprowT"}} Tschuprow's T correlation metric.
+  \item {\code{"Phi"}} (Binary Variables Only) Phi coefficient.
+  \item {\code{"YuleY"}} (Binary Variables Only) Yule's Y, also known as coefficient of colligation
+  \item {\code{"YuleQ"}} (Binary Variables Only) Yule's Q, related to Yule's Y by Q=2Y/(1+Y^2)
 }}
 
 \item{numbCorrMetric}{The correlation metric for numeric variables. Can be one of:
 \itemize{
-  \item {pearson} Pearson's Correlation Coefficient
-  \item {spearman} Spearman's Rank Correlation Coefficient
-  \item {kendall} Kendall's Rank Correlation Coefficient
-  \item {Rsquared} R-squared
+  \item {\code{"pearson"}} Pearson's Correlation Coefficient
+  \item {\code{"spearman"}} Spearman's Rank Correlation Coefficient
+  \item {\code{"kendall"}} Kendall's Rank Correlation Coefficient
+  \item {\code{"Rsquared"}} R-squared
 }}
 
 \item{...}{Other arguments to pass to grid.arrange()}
 }
 \value{
-nothing.
+an object of class \code{ggarrange}.
 }
 \description{
-Plot the correlation between every combination of datasets for each variable.
+Plot the correlation of imputed values between every combination of datasets for each variable.
 }
 \examples{
 data("sampleMiceDefs")

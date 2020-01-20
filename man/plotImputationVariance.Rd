@@ -20,11 +20,11 @@ variable names, or one of 'allNumeric' or 'allCategorical'}
 \item{monteCarloSimulations}{The number of simulations to run to determine the distribution of
 unique categorical levels drawn if the draws were completely random.}
 
-\item{...}{additional parameters passed to ggarrange when combining numeric and categorical
+\item{...}{additional parameters passed to \code{ggarrange}.
 plots.}
 }
 \value{
-nothing.
+an object of class \code{ggarrange}.
 }
 \description{
 plots the distribution of the difference between datasets of the imputed values.

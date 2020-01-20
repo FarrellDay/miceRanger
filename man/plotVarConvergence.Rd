@@ -15,7 +15,7 @@ variable names, or one of 'allNumeric' or 'allCategorical'}
 \item{...}{options passed to \code{grid.arrange()}}
 }
 \value{
-nothing.
+an object of class \code{ggarrange}.
 }
 \description{
 Plot the evolution of the dispersion and center of each variable.
