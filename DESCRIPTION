@@ -16,6 +16,8 @@ Description: Multiple Imputation has been shown to
   They have the added benefits of returning out of bag 
   error and variable importance estimates, as well as 
   being simple to run in parallel.
+URL: https://github.com/FarrellDay/miceRanger
+BugReports: https://github.com/FarrellDay/miceRanger/issues
 Encoding: UTF-8
 LazyData: true
 License: MIT + file LICENSE

@@ -3,7 +3,9 @@
 license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/miceRanger)](http://cran.r-project.org/package=miceRanger)
 [![Build
-Status](https://travis-ci.org/FarrellDay/miceRanger)](https://travis-ci.com/FarrellDay/miceRanger)
+Status](https://travis-ci.com/FarrellDay/miceRanger.svg?branch=master)](https://travis-ci.com/FarrellDay/miceRanger)
+[![Coverage
+Status](https://codecov.io/gh/FarrellDay/miceRanger/branch/master/graph/badge.svg)](https://codecov.io/gh/FarrellDay/miceRanger/branch/master)
 
 ## miceRanger: Fast Imputation with Random Forests
 
@@ -132,7 +134,7 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 9% faster using 2 R back ends."
+    ## [1] "The parallel process ran 10% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. Running in parallel will mostly save you time

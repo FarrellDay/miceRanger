@@ -1,8 +1,17 @@
 cran-comments
 ================
 
-Initial Submission.  
 Detailed Package Info: https://github.com/farrellday/miceRanger
+
+
+## Changes  
+* Ability to specify imputation method by variable
+* created unit tests with testthat
+
+
+
+
+
 
 ## Test Environments  
 * Local Windows 10 x64, R 3.6.2  
