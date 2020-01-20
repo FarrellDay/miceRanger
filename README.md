@@ -137,7 +137,7 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 5% faster using 2 R back ends."
+    ## [1] "The parallel process ran 14% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. Running in parallel will save you time if you
@@ -256,7 +256,7 @@ We can get a feel for the variance experienced for each imputed value
 between the datasets by using `plotImputationVariance()` function:
 
 ``` r
-plotImputationVariance(miceObj,ncol=1)
+plotImputationVariance(miceObj,ncol=2,widths=c(5,3))
 ```
 
 ![](README_files/figure-gfm/plotImputationVariance-1.png)<!-- -->

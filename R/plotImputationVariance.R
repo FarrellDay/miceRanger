@@ -98,6 +98,8 @@ plotImputationVariance <- function(
       }
     )
     
+    facList <- ggarrange(plotlist = facList,common.legend = TRUE,legend="bottom")
+    
     } else facList <- NULL
   
   
@@ -137,10 +139,12 @@ plotImputationVariance <- function(
         
         }
       )
+      
+      numList <- ggarrange(plotlist = numList)
+      
     } else numList <- NULL
   
-  pList <- c(numList,facList)
-  ggarrange(plotlist=pList,...)
+  ggarrange(numList,facList,...)
   
 }
 utils::globalVariables(c("x","..count.."))
