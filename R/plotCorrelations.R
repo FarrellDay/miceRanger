@@ -19,7 +19,7 @@
 #'   \item {\code{"kendall"}} Kendall's Rank Correlation Coefficient
 #'   \item {\code{"Rsquared"}} R-squared
 #' }
-#' @param ... Other arguments to pass to grid.arrange()
+#' @param ... Other arguments to pass to ggarrange()
 #' @importFrom ggplot2 ggplot geom_point ylab aes theme aes_string geom_boxplot
 #' @importFrom utils combn
 #' @importFrom ggpubr ggarrange theme_classic2

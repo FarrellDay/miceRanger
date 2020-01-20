@@ -19,7 +19,7 @@ variable names, or one of 'allNumeric' or 'allCategorical'}
 
 \item{pointSize}{passed to \code{geom_point}, allows user to change dot size.}
 
-\item{...}{other arguments passed to \code{grid.arrange()}}
+\item{...}{other arguments passed to \code{ggarrange()}}
 }
 \value{
 an object of class \code{ggarrange}.

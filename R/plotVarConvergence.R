@@ -5,7 +5,7 @@
 #' @param miceObj an object of class miceDefs, created by the miceRanger function.
 #' @param vars the variables you want to plot. Default is to plot all variables. Can be a vector of
 #' variable names, or one of 'allNumeric' or 'allCategorical'
-#' @param ... options passed to \code{grid.arrange()}
+#' @param ... options passed to \code{ggarrange()}
 #' @importFrom ggplot2 ggplot geom_point ylab aes theme aes_string element_blank geom_errorbar
 #' @importFrom stats sd
 #' @importFrom ggpubr ggarrange theme_classic2 annotate_figure text_grob

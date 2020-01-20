@@ -36,7 +36,7 @@ variable names, or one of 'allNumeric' or 'allCategorical'}
   \item {\code{"Rsquared"}} R-squared
 }}
 
-\item{...}{Other arguments to pass to grid.arrange()}
+\item{...}{Other arguments to pass to ggarrange()}
 }
 \value{
 an object of class \code{ggarrange}.

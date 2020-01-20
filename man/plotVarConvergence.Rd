@@ -12,7 +12,7 @@ plotVarConvergence(miceObj, vars = names(miceObj$callParams$vars), ...)
 \item{vars}{the variables you want to plot. Default is to plot all variables. Can be a vector of
 variable names, or one of 'allNumeric' or 'allCategorical'}
 
-\item{...}{options passed to \code{grid.arrange()}}
+\item{...}{options passed to \code{ggarrange()}}
 }
 \value{
 an object of class \code{ggarrange}.

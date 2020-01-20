@@ -4,10 +4,9 @@
 #' @param vars the variables you want to plot. Default is to plot all variables. Can be a vector of
 #' variable names, or one of 'allNumeric' or 'allCategorical'
 #' @param pointSize passed to \code{geom_point}, allows user to change dot size.
-#' @param ... other arguments passed to \code{grid.arrange()}
+#' @param ... other arguments passed to \code{ggarrange()}
 #' @importFrom data.table data.table
 #' @importFrom ggplot2 ggplot geom_line
-#' @importFrom gridExtra grid.arrange
 #' @return an object of class \code{ggarrange}.
 #' @examples 
 #' data("sampleMiceDefs")

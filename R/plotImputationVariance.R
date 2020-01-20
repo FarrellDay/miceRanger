@@ -11,7 +11,6 @@
 #' @param monteCarloSimulations The number of simulations to run to determine the distribution of
 #' unique categorical levels drawn if the draws were completely random.
 #' @param ... additional parameters passed to \code{ggarrange}.
-#' plots.
 #' @importFrom data.table data.table
 #' @importFrom ggplot2 position_nudge geom_area xlab ylab ggtitle scale_x_discrete geom_vline
 #' @return an object of class \code{ggarrange}.

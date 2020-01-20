@@ -20,8 +20,7 @@ variable names, or one of 'allNumeric' or 'allCategorical'}
 \item{monteCarloSimulations}{The number of simulations to run to determine the distribution of
 unique categorical levels drawn if the draws were completely random.}
 
-\item{...}{additional parameters passed to \code{ggarrange}.
-plots.}
+\item{...}{additional parameters passed to \code{ggarrange}.}
 }
 \value{
 an object of class \code{ggarrange}.
