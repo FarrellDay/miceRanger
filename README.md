@@ -31,6 +31,8 @@ you can find
         Parallel](https://github.com/FarrellDay/miceRanger#Running-in-Parallel)
       - [Adding
         Iterations/Datasets](https://github.com/FarrellDay/miceRanger#adding-more-iterationsdatasets)
+      - [Specifying Methods by
+        Variable](https://github.com/FarrellDay/miceRanger#Specifying-Predictors-and-Value-Selector-by-Variable)
   - [Diagnostic
     Plotting](https://github.com/FarrellDay/miceRanger#Diagnostic-Plotting)
       - [Imputed
@@ -137,7 +139,7 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 14% faster using 2 R back ends."
+    ## [1] "The parallel process ran 15% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. Running in parallel will save you time if you
@@ -153,6 +155,34 @@ use the following functions:
 ``` r
 miceObj <- addIterations(miceObj,iters=2,verbose=FALSE)
 miceObj <- addDatasets(miceObj,datasets=1,verbose=FALSE)
+```
+
+### Specifying Predictors and Value Selector by Variable
+
+It is possible to customize our imputation procedure by variable. By
+passing a named list to `vars`, you can specify the predictors for each
+variable to impute. You can also select which variables should be
+imputed using mean matching by passing a named vector to
+`valueSelector`.
+
+``` r
+v <- list(
+  Sepal.Width = c("Sepal.Length","Petal.Width","Species")
+  , Sepal.Length = c("Sepal.Width","Petal.Width")
+  , Species = c("Sepal.Width")
+)
+pmm <- c(
+    Sepal.Width = "meanMatch"
+  , Sepal.Length = "value"
+  , Species = "meanMatch"
+)
+
+miceObjCustom <- miceRanger(
+    ampIris
+  , vars = v
+  , valueSelector = pmm
+  , verbose=FALSE
+)
 ```
 
 ## Diagnostic Plotting
