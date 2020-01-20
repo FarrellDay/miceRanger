@@ -22,7 +22,7 @@ Encoding: UTF-8
 LazyData: true
 License: MIT + file LICENSE
 Depends: R (>= 3.5.0)
-Imports: ranger, data.table, stats, FNN, ggplot2, gridExtra, crayon, corrplot, ggpubr, DescTools, foreach
+Imports: ranger, data.table, stats, FNN, ggplot2, crayon, corrplot, ggpubr, DescTools, foreach
 Suggests: 
     knitr,
     rmarkdown,
