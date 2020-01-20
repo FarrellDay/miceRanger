@@ -5,9 +5,10 @@ Detailed Package Info: https://github.com/farrellday/miceRanger
 
 
 ## Changes  
-* Ability to specify imputation method by variable
-* created unit tests with testthat
-
+* Ability to specify imputation method by variable.
+* Ability to specify predictors for each variable.
+* Created unit tests with testthat.
+* Added BugReports and URL to DESCRIPTION.
 
 
 

@@ -13,7 +13,8 @@ Status](https://codecov.io/gh/FarrellDay/miceRanger/branch/master/graph/badge.sv
 
 Fast, memory efficient Multiple Imputation by Chained Equations (MICE)
 with random forests. It can impute categorical and numeric data without
-much setup, and has an array of diagnostic plots available. <br></br>  
+much setup, and has an array of diagnostic plots available.
+
 This document contains a thorough walkthrough of the package,
 benchmarks, and an introduction to multiple imputation. More information
 on MICE can be found in Stef van Buuren’s excellent online book, which
@@ -54,8 +55,6 @@ you can find
         Cases](https://github.com/FarrellDay/miceRanger#Common-Use-Cases)
       - [Predictive Mean
         Matching](https://github.com/FarrellDay/miceRanger#Predictive-Mean-Matching)
-
-<br></br>
 
 ## Using miceRanger
 
@@ -101,11 +100,15 @@ seqTime <- system.time(
 
 ### Running in Parallel
 
-By default, `ranger` will use all available cores. However, we can still
-save some time by sending each dataset imputation to a different R back
-end. To do this, we need to set up some parallel back ends and use
-`parallel = TRUE`. Fair warning: This causes the dataset to be copied
-for each back end, which may eat up your RAM.
+Running in parallel is usually not necessary. By default, `ranger` will
+use all available cores, and `data.table`s assignment by reference is
+already lightning fast. However, in certain cases, we can still save
+some time by sending each dataset imputation to a different R back end.
+To do this, we need to set up a core cluster and use `parallel = TRUE`.
+*This causes the dataset to be copied for each back end, which may eat
+up your RAM. If the process is memory constrained, this can cause the
+parallel implementation to actually take more time than the sequential
+implementation.*
 
 ``` r
 library(doParallel)
@@ -134,11 +137,12 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 10% faster using 2 R back ends."
+    ## [1] "The parallel process ran 5% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
-makes full use of our CPU. Running in parallel will mostly save you time
-if you are using a high `meanMatchCandidates`.
+makes full use of our CPU. Running in parallel will save you time if you
+are using a high `meanMatchCandidates`, or if you are working with very
+large data.
 
 ### Adding More Iterations/Datasets
 
