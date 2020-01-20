@@ -13,4 +13,10 @@ miceObj <- miceRanger(
   )
 )
 
-expect_equal(miceObj,sampleMiceDefs)
+# Time can differ, that's fine.
+impTimIdx <- which(names(miceObj) == "imputationTime")
+expect_equal(miceObj[-impTimIdx],sampleMiceDefs[-impTimIdx])
+
+moComp <- completeData(miceObj)
+smComp <- completeData(sampleMiceDefs)
+expect_equal(moComp,smComp)
