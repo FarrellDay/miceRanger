@@ -49,7 +49,10 @@ runIterations <- function(
     
     # global binding.
     dataSet <- get("dataSet")
-    dats <- if (!is.null(miceObj)) copy(completeData(miceObj,datasets=dataSet)[[1]]) else copy(dat)
+    
+    # If  adding iterations to currently imputed datasets, start where we left off
+    # If adding datasets, start new
+    dats <- if (!is.null(miceObj)) copy(completeData(miceObj,datasets=dataSet,verbose=FALSE)[[1]]) else copy(dat)
     
     if(verbose) cat(ds("\ndataset",dataSet + oldm,"\n"))
     
@@ -63,11 +66,12 @@ runIterations <- function(
       
       for (impVar in varn) {
 
+        # Only feed ranger the columns we need for this imputation
         algCols <- c(impVar,vars[[impVar]])
 
         if(verbose) cat(" |",impVar)
         missIndx <- naWhere[,impVar]
-        returnProb <- modelTypes[impVar] == "Classification" & valueSelector == "meanMatch"
+        returnProb <- modelTypes[impVar] == "Classification" & valueSelector[impVar] == "meanMatch"
         model <- ranger(
           data = dats[!missIndx,algCols,with=FALSE]
           , dependent.variable.name = impVar
@@ -76,8 +80,17 @@ runIterations <- function(
           , verbose = FALSE
           , ...
         )
+        
+        # Extract information we need from the model.
         pred <- predict(model,dats)$predictions
-        iterImps[[impVar]] <- imputeFromPred(pred,modelTypes[impVar],valueSelector,meanMatchCandidates,dats[!missIndx][,get(impVar)],missIndx)
+        iterImps[[impVar]] <- imputeFromPred(
+            pred
+          , modelTypes[impVar]
+          , valueSelector[impVar]
+          , meanMatchCandidates
+          , dats[!missIndx][,get(impVar)]
+          , missIndx
+        )
         dats[missIndx,(impVar) := iterImps[[impVar]]]
         iterImport[[impVar]] <- as.data.table(as.list(model$variable.importance))
         if(modelTypes[impVar] == "Regression") {

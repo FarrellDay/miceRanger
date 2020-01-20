@@ -18,7 +18,6 @@ amputeData <- function(
   , cols = names(data)
 )
 {
-  
   # Should we copy the entire dataset? 
   data <- copy(data)
   

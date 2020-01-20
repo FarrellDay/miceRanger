@@ -1,7 +1,9 @@
 #' @title completeData
-#' @description Create a impDefs object, which contains information about the imputation process.
+#' @description Return the completed datasets.
 #' @param miceObj an object of class miceDefs.
 #' @param datasets a vector of the datasets you want to return.
+#' @param verbose a warning is thrown if integers are converted to doubles.
+#' To suppress this warning, set to \code{FALSE}.
 #' @importFrom stats complete.cases
 #' @return A list of imputed datasets.
 #' @examples
@@ -11,17 +13,20 @@
 completeData <- function(
     miceObj
   , datasets = 1:miceObj$callParams$m
+  , verbose = TRUE
 ) {
   
   if (class(miceObj) != "miceDefs") stop("miceObj should be an object of class miceDefs.")
   
   dat <- copy(miceObj$data)
   varn <- names(miceObj$callParams$vars)
+  rawClasses <- miceObj$rawClasses
   
-  intVar <- names(miceObj$rawClasses[miceObj$rawClasses == "integer"])
-  if(any(miceObj$rawClasses == "integer") & miceObj$callParams$valueSelector == "value") {
-    warning(paste0(paste0(intVar,collapse = ","))," are integers, and will be converted to double because valueSelector = 'value'")
-    dat[,(intVar) := lapply(.SD,as.double),.SDcols=intVar]  
+  intToDouble <- rawClasses[varn] == "integer" & miceObj$callParams$valueSelector == "value"
+  if(any(intToDouble)) {
+    intToDouble <- names(intToDouble[intToDouble])
+    if (verbose) message(paste0(paste0(intToDouble,collapse = ","))," are integers, and will be converted to double because valueSelector = 'value'")
+    dat[,(intToDouble) := lapply(.SD,as.double),.SDcols=intToDouble]  
   }
   
   completeSets <- sapply(

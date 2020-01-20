@@ -18,7 +18,9 @@ variable names, or one of 'allNumeric' or 'allCategorical'}
 nothing.
 }
 \description{
-Create a impDefs object, which contains information about the imputation process.
+Plot the evolution of the dispersion and center of each variable.
+For numeric variables, the center is the mean, and the dispersion is the standard deviation.
+For categorical variables, the center is the mode, and the dispersion is the entropy of the distribution.
 }
 \examples{
 data("sampleMiceDefs")

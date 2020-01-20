@@ -8,7 +8,6 @@
 #' @param miceObj an object of class miceDefs, created by the miceRanger function.
 #' @param vars the variables you want to plot. Default is to plot all variables. Can be a vector of
 #' variable names, or one of 'allNumeric' or 'allCategorical'
-#' @param title optional title for the arranged grob.
 #' @param monteCarloSimulations The number of simulations to run to determine the distribution of
 #' unique categorical levels drawn if the draws were completely random.
 #' @param ... additional parameters passed to ggarrange when combining numeric and categorical
@@ -23,7 +22,6 @@
 plotImputationVariance <- function(
     miceObj
   , vars = names(miceObj$callParams$vars)
-  , title=NULL
   , monteCarloSimulations = 10000
   , ...
 ) {

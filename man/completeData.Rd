@@ -4,18 +4,21 @@
 \alias{completeData}
 \title{completeData}
 \usage{
-completeData(miceObj, datasets = 1:miceObj$callParams$m)
+completeData(miceObj, datasets = 1:miceObj$callParams$m, verbose = TRUE)
 }
 \arguments{
 \item{miceObj}{an object of class miceDefs.}
 
 \item{datasets}{a vector of the datasets you want to return.}
+
+\item{verbose}{a warning is thrown if integers are converted to doubles.
+To suppress this warning, set to \code{FALSE}.}
 }
 \value{
 A list of imputed datasets.
 }
 \description{
-Create a impDefs object, which contains information about the imputation process.
+Return the completed datasets.
 }
 \examples{
 data("sampleMiceDefs")

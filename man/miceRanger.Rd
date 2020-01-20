@@ -20,38 +20,32 @@ miceRanger(
 \item{data}{The data to be imputed. Can contain variables that are not going to be imputed, which you
 want to use as features.}
 
-\item{m}{The datasets to produce}
+\item{m}{The number of datasets to produce}
 
 \item{maxiter}{The number of iterations to run for each dataset.}
 
-\item{vars}{A named list of character vectors representing the target/predictors.
-List names are the variables to impute, and the elements in the vectors should 
-be features used to impute that variable. The order of this list will 
-determine the order in which the variables are imputed. Default is to impute
-all of the variables in \code{data}, in the same order they exist in the 
-data.frame, using all of the columns as features. Any variable in this list that 
-contains no missing values will be removed, but will continue to be used as a feature.}
-
-\item{valueSelector}{How to select the value to be imputed from the model predictions. 
-Can either use mean matching or use the output from the regression itself. 
+\item{vars}{Specifies which and how variables should be imputed. Can be specified in 3 different ways:
 \itemize{
-  \item {"meanMatch"} Mean matching for regression will select one of \code{meanMatchCandidates} 
-  values. These candidates had a predicted value that is closest to the predicted value for that missing sample.
-  Mean matching for classification will select a level based on a random sampling weighted by the class
-  probability output by the random forest.
-  \item {"value"} Returns the predicted output from the random forest. This will be the predicted
-  class for classification, and the value for regression. Allows interpolation in regression.
-  Can produce better imputations if the data is not very skewed or otherwise nicely distributed.
+  \item {<missing>} If not provided, all columns will be imputed using all columns. If
+  a column contains no missing values, it will still be used as a feature to impute missing columns.
+  \item {<Character Vector>} If a character vector of column names is passed, these columns will
+  be imputed using all available columns in the dataset. The order of this vector will determine the 
+  order in which the variables are imputed.
+ \item {<Named List of Character Vectors>} Predictors can be specified for each variable with named list. 
+ List names are the variables to impute. Elements in the vectors should be features used to 
+ impute that variable. The order of this list will determine the order in which the variables are imputed.
 }}
 
-\item{meanMatchCandidates}{Used for regression. Take a random value from the most similair N values
-in the dataset. Defaults to 1 percent of the rows in the dataset, with a minimum of 5.}
+\item{valueSelector}{How to select the value to be imputed from the model predictions. 
+Can be "meanMatching", "value", or a named vector containing a mixture of those values.
+If a named vector is passed, the names must equal the variables to be imputed specified in \code{vars}.}
 
-\item{parallel}{Should the process run in parallel? This process will take advantage of any cluster 
-set up when \code{miceRanger} is called. Use carefully, a copy of \code{data} is sent to
-each back end, and then another working copy is created to keep track of imputations. 
-Therefore 1 copy exists in the \code{miceRanger} function scope, and 2 copies exist in each 
-back end when running in parallel.}
+\item{meanMatchCandidates}{Used for regression. Specifies the number of candidate values 
+If a variable is being imputed using mean matching,
+this}
+
+\item{parallel}{Should the process run in parallel? Usually not necessary. This process will 
+take advantage of any cluster set up when \code{miceRanger} is called.}
 
 \item{verbose}{should progress be printed?}
 
@@ -75,8 +69,8 @@ a miceDefs object, containing the following:
   specified datasets and iterations. Does not include any setup time.}
 }
 \description{
-Performs Multiple Imputation by Chained Equations (MICE).
-Creates a miceDefs object, which contains information about the imputation process.
+Performs multiple imputation by chained random forests.
+Returns a miceDefs object, which contains information about the imputation process.
 }
 \examples{
 # Using Mice to create 5 imputed datasets

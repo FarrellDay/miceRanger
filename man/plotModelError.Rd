@@ -25,7 +25,7 @@ variable names, or one of 'allNumeric' or 'allCategorical'}
 nothing.
 }
 \description{
-Create a impDefs object, which contains information about the imputation process.
+Plot the Out Of Bag model error for specified variables over all tierations.
 }
 \examples{
 data("sampleMiceDefs")

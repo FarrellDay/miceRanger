@@ -20,7 +20,7 @@ plotVarImportance(
   \item {"Absolute"} Displays the variable importance as is. May be highly skewed.
 }}
 
-\item{dataset}{The dataset you want to plot the importance of.}
+\item{dataset}{The dataset you want to plot the variable importance of.}
 
 \item{...}{Other arguments passed to corrplot.}
 }
@@ -28,7 +28,7 @@ plotVarImportance(
 nothing.
 }
 \description{
-Create a impDefs object, which contains information about the imputation process.
+Plot the variable importance for each imputed variable.
 }
 \examples{
 data("sampleMiceDefs")

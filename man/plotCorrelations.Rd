@@ -42,7 +42,7 @@ variable names, or one of 'allNumeric' or 'allCategorical'}
 nothing.
 }
 \description{
-Create a impDefs object, which contains information about the imputation process.
+Plot the correlation between every combination of datasets for each variable.
 }
 \examples{
 data("sampleMiceDefs")

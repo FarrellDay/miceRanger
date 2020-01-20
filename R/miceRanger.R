@@ -1,35 +1,29 @@
 #' @title miceRanger
-#' @description Performs Multiple Imputation by Chained Equations (MICE).
-#' Creates a miceDefs object, which contains information about the imputation process.
+#' @description Performs multiple imputation by chained random forests.
+#' Returns a miceDefs object, which contains information about the imputation process.
 #' @param data The data to be imputed. Can contain variables that are not going to be imputed, which you
 #' want to use as features.
-#' @param m The datasets to produce
+#' @param m The number of datasets to produce
 #' @param maxiter The number of iterations to run for each dataset.
-#' @param vars A named list of character vectors representing the target/predictors.
-#' List names are the variables to impute, and the elements in the vectors should 
-#' be features used to impute that variable. The order of this list will 
-#' determine the order in which the variables are imputed. Default is to impute
-#' all of the variables in \code{data}, in the same order they exist in the 
-#' data.frame, using all of the columns as features. Any variable in this list that 
-#' contains no missing values will be removed, but will continue to be used as a feature.
-#' @param valueSelector How to select the value to be imputed from the model predictions. 
-#' Can either use mean matching or use the output from the regression itself. 
+#' @param vars Specifies which and how variables should be imputed. Can be specified in 3 different ways:
 #' \itemize{
-#'   \item {"meanMatch"} Mean matching for regression will select one of \code{meanMatchCandidates} 
-#'   values. These candidates had a predicted value that is closest to the predicted value for that missing sample.
-#'   Mean matching for classification will select a level based on a random sampling weighted by the class
-#'   probability output by the random forest.
-#'   \item {"value"} Returns the predicted output from the random forest. This will be the predicted
-#'   class for classification, and the value for regression. Allows interpolation in regression.
-#'   Can produce better imputations if the data is not very skewed or otherwise nicely distributed.
+#'   \item {<missing>} If not provided, all columns will be imputed using all columns. If
+#'   a column contains no missing values, it will still be used as a feature to impute missing columns.
+#'   \item {<Character Vector>} If a character vector of column names is passed, these columns will
+#'   be imputed using all available columns in the dataset. The order of this vector will determine the 
+#'   order in which the variables are imputed.
+#'  \item {<Named List of Character Vectors>} Predictors can be specified for each variable with named list. 
+#'  List names are the variables to impute. Elements in the vectors should be features used to 
+#'  impute that variable. The order of this list will determine the order in which the variables are imputed.
 #' }
-#' @param meanMatchCandidates Used for regression. Take a random value from the most similair N values
-#' in the dataset. Defaults to 1 percent of the rows in the dataset, with a minimum of 5.
-#' @param parallel Should the process run in parallel? This process will take advantage of any cluster 
-#' set up when \code{miceRanger} is called. Use carefully, a copy of \code{data} is sent to
-#' each back end, and then another working copy is created to keep track of imputations. 
-#' Therefore 1 copy exists in the \code{miceRanger} function scope, and 2 copies exist in each 
-#' back end when running in parallel.
+#' @param valueSelector How to select the value to be imputed from the model predictions. 
+#' Can be "meanMatching", "value", or a named vector containing a mixture of those values.
+#' If a named vector is passed, the names must equal the variables to be imputed specified in \code{vars}.
+#' @param meanMatchCandidates Used for regression. Specifies the number of candidate values 
+#' If a variable is being imputed using mean matching,
+#' this 
+#' @param parallel Should the process run in parallel? Usually not necessary. This process will 
+#' take advantage of any cluster set up when \code{miceRanger} is called.
 #' @param verbose should progress be printed?
 #' @param ... other parameters passed to \code{ranger()} to control forest growth.
 #' @importFrom data.table as.data.table rbindlist setcolorder setnames copy setDT
@@ -103,30 +97,40 @@ miceRanger <- function(
 )
 {
   
-  # Define Variables
+  # Define Variables.
   if (missing(vars)) {
     vars <- sapply(names(data),function(x) setdiff(names(data),x),USE.NAMES = TRUE,simplify = FALSE)
     varp <- names(data)
-  } else {
-    if (class(vars) != "list") stop("vars must be a named list of character vectors.")
+  } else if (class(vars) == "character") {
+    vars <- sapply(vars,function(x) setdiff(names(data),x),USE.NAMES = TRUE,simplify = FALSE)
+    varp <- names(data)
+  } else if (class(vars) == "list") {
+    if (is.null(names(vars))) stop("If a list is specified for vars, the list names must be the variables to impute.")
     if (any(sapply(names(vars),function(x) x %in% vars[[x]]))) stop("A variable cannot be used to impute itself, check vars.")
     if (any(!names(vars) %in% names(data))) stop("at least 1 name in vars is not a column in data.")
     varp <- unique(unlist(vars))
-    if (any(!names(vars) %in% names(data))) stop("at least 1 name in vars is not a column in data.")
     if (any(!varp %in% names(data))) stop("at least 1 predictor provided in vars is not a column in data.")
-  }
+  } else stop("vars not recognized. Please see ?miceRanger for available options for vars.")
+  
   
   # Get names of vars to impute
   varn <- names(vars)
+  
+  # Define Value Selector
+  if(is.null(names(valueSelector))) {
+    if (!valueSelector[[1]] %in% c("meanMatch","value")) stop("valueSelector not recognized")
+    valueSelector <- rep(valueSelector[[1]],length(vars))
+    names(valueSelector) <- varn
+  } else {
+    if(!setequal(names(vars),names(valueSelector))) stop("Names in valueSelector do not match variables to impute specified by vars.")
+    if(!any(valueSelector %in% c("meanMatch","value"))) stop("All elements in valueSelector should be either 'meanMatch' or 'value'.")
+  }
   
   # Create a copy of dataset so original is not modified.
   # This dataset is used to assign by reference throughout the process.
   # Fastest method, at the expense of duplicating the dataset.
   dat <- copy(data)
   setDT(dat)
-  
-  # Miscellaneous
-  valueSelector <- valueSelector[[1]]
 
   # Define parallelization setup
   ParMethod <- function(x) if(x) {`%dopar%`} else {`%do%`}
@@ -158,23 +162,40 @@ miceRanger <- function(
   # All vars
   vara <- unique(c(varn,varp))
   
+  # These characters in variable names cause problems when plotting:
+  specCharsExist <- sapply(
+      c(" ","-","/","=","!","@","%","<",">")
+    , function(v) any(lengths(regmatches(vara, gregexpr(v, vara))) > 0)
+  )
+  if(any(specCharsExist)) {
+    message("Some variable names contain characters which will cause parsing issues when plotting: (' ','-','/',...).\nContinue? [y/n]")
+    line <- readline()
+    if(tolower(line)=="y") invisible() else stop("Process Stopped By User.")
+  }
+  
   # Only keep columns that can be used.
   if (any(!names(dat) %in% vara)) dat[,(setdiff(names(dat),vara)) := NULL]
 
-  # Ranger requires factors.
-  # If valueSelector == 'value', integer targets will be interpolated. Need to
-  # make integers doubles for this reason.
+  # Keep track of datatypes
   rawClasses <- sapply(dat[,vara,with=FALSE],class)
   toFactr <- names(rawClasses[rawClasses=="character"])
-  toNumer <- names(rawClasses[rawClasses=="integer"])
+  
+  # Convert character columns to factors.
   if (any(rawClasses == "character")) {
     if(verbose) message("Converting characters to factors.")
     dat[,(toFactr) := lapply(.SD,factor),.SDcols=toFactr]
   }
-  if (any(rawClasses == "integer") & valueSelector == "value") {
+  
+  # Convert any integer variables to double if we aren't mean matching.
+  # If we don't, data.table will complain when we try to complete the data.
+  # Numeric stored with 0 precision is fine.
+  intToDouble <- rawClasses[varn] == "integer" & valueSelector[varn] == "value"
+  if (any(intToDouble)) {
     if(verbose) message("valueSelector == 'value', so interpolation is possible. Converting integers to doubles so precision isn't lost.")
-    dat[,(toNumer) := lapply(.SD,as.double),.SDcols=toNumer]
+    intToDouble <- names(intToDouble[intToDouble])
+    dat[,(intToDouble) := lapply(.SD,as.double),.SDcols=intToDouble]
   }
+
   
   # Fill missing data with random samples from the nonmissing data.
   fillMissing <- function(vec) {

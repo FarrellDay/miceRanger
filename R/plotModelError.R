@@ -1,12 +1,12 @@
 #' @title plotModelError
-#' @description Create a impDefs object, which contains information about the imputation process.
+#' @description Plot the Out Of Bag model error for specified variables over all tierations.
 #' @param miceObj an object of class miceDefs, created by the miceRanger function.
 #' @param vars the variables you want to plot. Default is to plot all variables. Can be a vector of
 #' variable names, or one of 'allNumeric' or 'allCategorical'
 #' @param pointSize passed to \code{geom_point}, allows user to change dot size.
 #' @param ... other arguments passed to \code{grid.arrange()}
 #' @importFrom data.table data.table
-#' @importFrom ggplot2 geom_line
+#' @importFrom ggplot2 ggplot geom_line
 #' @importFrom gridExtra grid.arrange
 #' @return nothing.
 #' @examples 
@@ -33,17 +33,15 @@ plotModelError <- function(
       mat$iteration <- factor(rep(1:miceObj$callParams$maxiter,miceObj$callParams$m))
       setnames(mat,"V1",var)
       return(
-        ggplotGrob(
-          ggplot(mat,aes_string(x="iteration",y=var,group="dataset")) +
-            geom_line() +
-            geom_point(size=pointSize) +
-            ylab(paste0(var,"\n",metric))
-        )
+        ggplot(mat,aes_string(x="iteration",y=var,group="dataset")) +
+          geom_line() +
+          geom_point(size=pointSize) +
+          ylab(paste0(var,"\n",metric))
       )
     }
   )
 
-  grid.arrange(grobs = pList,...)
+  ggarrange(plotlist = pList,...)
   
 }
 

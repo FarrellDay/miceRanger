@@ -2,12 +2,12 @@
 #' @description Add datasets to a current miceDefs object. 
 #' Adds the same number of iterations as other datasets.
 #' @param miceObj A miceDefs object created by \code{miceRanger}.
-#' @param datasets The number of iterations to run the MICE algorithm on each dataset.
+#' @param datasets The number of datasets to add.
 #' @param parallel Should the process run in parallel? This process will take advantage of any cluster 
 #' set up when \code{miceRanger} is called.
 #' @param verbose should progress be printed?
 #' @param ... other parameters passed to \code{ranger()} to control model building.
-#' @return a miceDefs object with additional iterations.
+#' @return an updated miceDefs object with additional datasets.
 #' @examples
 #' data("sampleMiceDefs")
 #' miceObj <- addIterations(
@@ -27,11 +27,14 @@ addDatasets <- function(
 )
 {
   
+  # Setup
   dat <- copy(miceObj$data)
   ds <- crayon::make_style("#4B8E78")
   varn <- names(miceObj$callParams$vars)
   varp <- unique(unlist(miceObj$callParams$vars))
   vara <- unique(c(varn,varp))
+  valueSelector <- miceObj$callParams$valueSelector
+  modelTypes <- ifelse(miceObj$newClasses[varn] == "factor","Classification","Regression")
   
   # Define parallelization setup
   ParMethod <- function(x) if(x) {`%dopar%`} else {`%do%`}
@@ -45,14 +48,17 @@ addDatasets <- function(
   # Apply the same changes as in miceRanger()
   rawClasses <- sapply(dat[,vara,with=FALSE],class)
   toFactr <- names(rawClasses[rawClasses=="character"])
-  toNumer <- names(rawClasses[rawClasses=="integer"])
   if (any(rawClasses == "character")) {
     dat[,(toFactr) := lapply(.SD,factor),.SDcols=toFactr]
   }
-  if (any(rawClasses == "integer") & miceObj$callParams$valueSelector == "value") {
-    dat[,(toNumer) := lapply(.SD,as.double),.SDcols=toNumer]
+  intToDouble <- rawClasses[varn] == "integer" & valueSelector[varn] == "value"
+  if (any(intToDouble)) {
+    if(verbose) message("valueSelector == 'value', so interpolation is possible. Converting integers to doubles so precision isn't lost.")
+    intToDouble <- names(intToDouble[intToDouble])
+    dat[,(intToDouble) := lapply(.SD,as.double),.SDcols=intToDouble]
   }
-  modelTypes <- ifelse(miceObj$newClasses[varn] == "factor","Classification","Regression")
+  
+  
   # Fill missing data with random samples from the nonmissing data.
   fillMissing <- function(vec) {
     vec[is.na(vec)] <- sample(vec[!is.na(vec)],size = sum(is.na(vec)),replace=TRUE)
@@ -69,7 +75,7 @@ addDatasets <- function(
     , maxiter = miceObj$callParams$maxiter
     , vars = miceObj$callParams$vars
     , naWhere = miceObj$naWhere
-    , valueSelector = miceObj$callParams$valueSelector
+    , valueSelector = valueSelector
     , meanMatchCandidates = miceObj$callParams$meanMatchCandidates
     , modelTypes = modelTypes
     , verbose = verbose

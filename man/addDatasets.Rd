@@ -9,7 +9,7 @@ addDatasets(miceObj, datasets = 3, parallel = FALSE, verbose = TRUE, ...)
 \arguments{
 \item{miceObj}{A miceDefs object created by \code{miceRanger}.}
 
-\item{datasets}{The number of iterations to run the MICE algorithm on each dataset.}
+\item{datasets}{The number of datasets to add.}
 
 \item{parallel}{Should the process run in parallel? This process will take advantage of any cluster 
 set up when \code{miceRanger} is called.}
@@ -19,7 +19,7 @@ set up when \code{miceRanger} is called.}
 \item{...}{other parameters passed to \code{ranger()} to control model building.}
 }
 \value{
-a miceDefs object with additional iterations.
+an updated miceDefs object with additional datasets.
 }
 \description{
 Add datasets to a current miceDefs object. 

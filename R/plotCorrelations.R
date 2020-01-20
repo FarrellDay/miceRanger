@@ -1,5 +1,5 @@
 #' @title plotCorrelations
-#' @description Create a impDefs object, which contains information about the imputation process.
+#' @description Plot the correlation between every combination of datasets for each variable.
 #' @param miceObj an object of class miceDefs, created by the miceRanger function.
 #' @param vars the variables you want to plot. Default is to plot all variables. Can be a vector of
 #' variable names, or one of 'allNumeric' or 'allCategorical'
@@ -118,6 +118,6 @@ plotCorrelations <- function(
     }
   )
   
-  grid.arrange(grobs = pList,...)
+  ggarrange(plotlist = pList,...)
   
 }
