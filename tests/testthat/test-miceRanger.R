@@ -4,7 +4,7 @@ data(iris)
 ampDat <- amputeData(iris)
 
 v <- list(
-  Sepal.Width = c("Sepal.Length","Petal.Width","Species")
+    Sepal.Width = c("Sepal.Length","Petal.Width","Species")
   , Sepal.Length = c("Sepal.Width","Petal.Width")
   , Species = c("Sepal.Width")
 )
@@ -15,7 +15,8 @@ pmm <- c(
 )
 
 miceObj <- miceRanger(
-  ampDat
+    ampDat
   , vars = v
   , valueSelector = pmm
+  , verbose=FALSE
 )
