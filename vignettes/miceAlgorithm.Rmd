@@ -1,0 +1,117 @@
+---
+title: "The MICE Algorithm"
+author: "Sam Wilson"
+date: "`r Sys.Date()`"
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{The MICE Algorithm}
+  %\VignetteEngine{knitr::knitr}
+  \usepackage[utf8]{inputenc}
+---
+
+## The MICE Algorithm
+Multiple Imputation by Chained Equations 'fills in' (imputes) missing data in a dataset through an iterative series of predictive models. In each iteration, each specified variable in the dataset is imputed using the other variables in the dataset. These iterations should be run until it appears that convergence has been met.  
+
+  
+
+```{r eval=TRUE,echo=FALSE,fig.align='center',out.height='462px',out.width='851px'}
+knitr::include_graphics("MICEalgorithm.png")
+```  
+
+This process is continued until all specified variables have been imputed. Additional iterations can be run if it appears that the average imputed values have not converged, although no more than 5 iterations are usually necessary.
+
+
+### Predictive Mean Matching
+```miceRanger``` can make use of a procedure called predictive mean matching (PMM) to select which values are imputed. PMM involves selecting a datapoint from the original, nonmissing data which has a predicted value close to the predicted value of the missing sample. The closest N (```meanMatchCandidates``` parameter in ```miceRanger()```) values are chosen as candidates, from which a value is chosen at random. Going into more detail from our example above, we see how this works in practice:  
+
+  
+```{r eval=TRUE,echo=FALSE,fig.align='center',out.height='278px',out.width='793px'}
+knitr::include_graphics("PMM.png")
+```  
+  
+
+This method is very useful if you have a variable which needs imputing which has any of the following characteristics:  
+
+* Multimodal  
+* Integer  
+* Skewed  
+  
+### Effects of Mean Matching  
+As an example, let's construct a dataset with some of the above characteristics:
+```{r skewedData, fig.height = 8, fig.width = 8}
+library(data.table)
+library(miceRanger)
+
+# random uniform variable
+nrws <- 1000
+dat <- data.table(Uniform_Variable = runif(nrws))
+
+# slightly bimodal variable correlated with Uniform_Variable
+dat$Close_Bimodal_Variable <- sapply(
+    dat$Uniform_Variable
+  , function(x) sample(c(rnorm(1,-2),rnorm(1,2)),prob=c(x,1-x),size=1)
+) + dat$Uniform_Variable
+
+# very bimodal variable correlated with Uniform_Variable
+dat$Far_Bimodal_Variable <- sapply(
+    dat$Uniform_Variable
+  , function(x) sample(c(rnorm(1,-3),rnorm(1,3)),prob=c(x,1-x),size=1)
+)
+
+# Highly skewed variable correlated with Uniform_Variable
+dat$Skewed_Variable <- exp((dat$Uniform_Variable*runif(nrws)*3)) + runif(nrws)*3
+
+# Integer variable correlated with Close_Bimodal_Variable and Uniform_Variable
+dat$Integer_Variable <- round(dat$Uniform_Variable + dat$Close_Bimodal_Variable/3 + runif(nrws)*2)
+
+# Ampute the data.
+ampDat <- amputeData(dat,0.2)
+
+# Plot the original data
+plot(dat)
+```
+
+We can see how our variables are distributed and correlated in the graph above. Now let's run our imputation process twice, once using mean matching, and once using the model prediction.  
+```{r}
+mrMeanMatch <- miceRanger(ampDat,valueSelector = "meanMatch",verbose=FALSE)
+mrModelOutput <- miceRanger(ampDat,valueSelector = "value",verbose=FALSE)
+```  
+
+Let's look at the effect on the different variables.
+
+#### Bimodial Variable
+
+```{r eval=TRUE,echo=FALSE,fig.align='center',out.width='800px'}
+knitr::include_graphics("mmEffectsFarBimodal.png")
+```  
+
+The affect of mean matching on our imputations is immediately apparent. If we were only looking at model error, we may be inclined to use the Prediction Value, since it has a higher OOB R-Squared. However, we are left with imputations that do not match our original distribution, and therefore, do not behave like our original data.  
+
+#### Skewed Variable
+
+```{r eval=TRUE,echo=FALSE,fig.align='center',out.width='800px'}
+knitr::include_graphics("mmEffectsSkewed.png")
+```  
+
+We see a similar occurance in the skewed variable - the distribution of the values imputed with the Prediction Value are shifted towards the mean.
+
+#### Integer Variable
+
+```{r eval=TRUE,echo=FALSE,fig.align='center',out.width='800px'}
+knitr::include_graphics("mmEffectsInteger.png")
+```  
+
+The most obvious variable affected by mean matching was our integer variable - using ```valueSelector = 'value'``` allows interpolation in the numeric variables. Using mean matching has allowed us to keep the distribution and distinct values of the original data, without sacrificing accuracy.  
+  
+### Common Use Cases of MICE  
+##### **Data Leakage:**  
+MICE is particularly useful if missing values are associated with the target variable in a way that introduces leakage. For instance, let's say you wanted to model customer retention at the time of sign up. A certain variable is collected at sign up or 1 month after sign up. The absence of that variable is a data leak, since it tells you that the customer did not retain for 1 month.
+
+##### **Funnel Analysis:**  
+Information is often collected at different stages of a 'funnel'. MICE can be used to make educated guesses about the characteristics of entities at different points in a funnel.  
+
+##### **Confidence Intervals:**  
+MICE can be used to impute missing values, however it is important to keep in mind that these imputed values are a prediction. Creating multiple datasets with different imputed values allows you to do two types of inference:  
+
+* Imputed Value Distribution: A profile can be built for each imputed value, allowing you to make statements about the likely distribution of that value.  
+* Model Prediction Distribution: With multiple datasets, you can build multiple models and create a distribution of predictions for each sample. Those samples with imputed values which were not able to be imputed with much confidence would have a larger variance in their predictions.  
