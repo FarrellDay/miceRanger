@@ -1,18 +1,16 @@
 cran-comments
 ================
 
-## miceRanger 1.2.0  
+## miceRanger 1.2.1  
 Detailed Package Info: https://github.com/farrellday/miceRanger
 
 
-### BUG FIX  
-* Fixed problem with plot arrangement. Only 1 numeric + 1 categorical variable would fail.
-* Created unit tests with testthat to cover most possible scenarios.
-
 ### Changes
-* Ability to specify imputation method by variable.
-* Ability to specify predictors for each variable.
-* Added BugReports and URL to DESCRIPTION.
+This submission is to fix the ERROR's occuring here:  
+https://cran.r-project.org/web/checks/check_results_miceRanger.html
+
+Unit tests are failing because of a difference in seed behavior on those systems.
+Removed the reliance on RNG to pass unit test.
 
 ### Test Environments  
 * Local Windows 10 x64, R 3.6.2  
