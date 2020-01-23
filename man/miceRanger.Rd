@@ -41,8 +41,7 @@ Can be "meanMatching", "value", or a named vector containing a mixture of those 
 If a named vector is passed, the names must equal the variables to be imputed specified in \code{vars}.}
 
 \item{meanMatchCandidates}{Used for regression. Specifies the number of candidate values 
-If a variable is being imputed using mean matching,
-this}
+which are selected from in the mean matching algorithm.}
 
 \item{parallel}{Should the process run in parallel? Usually not necessary. This process will 
 take advantage of any cluster set up when \code{miceRanger} is called.}
@@ -55,10 +54,10 @@ take advantage of any cluster set up when \code{miceRanger} is called.}
 a miceDefs object, containing the following:
 \item{callParams}{The parameters of the object.}
 \item{data}{The original data provided by the user.}
-\item{naWhere}{Logical index of missing data, having the same dimensions as data.}
+\item{naWhere}{Logical index of missing data, having the same dimensions as \code{data}.}
 \item{missingCounts}{The number of missing values for each variable}
 \item{rawClasses}{The original classes provided in \code{data}}
-\item{newClasses}{The new classes of the returned dataset. Classes can be changed if necessary.}
+\item{newClasses}{The new classes of the returned data.}
 \item{allImps}{The imputations of all variables at each iteration, for each dataset.}
 \item{allImport}{The variable importance metrics at each iteration, for each dataset.}
 \item{allError}{The OOB model error for all variables at each iteration, for each dataset.}
@@ -72,14 +71,28 @@ a miceDefs object, containing the following:
 Performs multiple imputation by chained random forests.
 Returns a miceDefs object, which contains information about the imputation process.
 }
+\section{Vignettes}{
+
+
+It is highly recommended to visit the \href{https://github.com/farrellday/miceRanger}{GitHub README} 
+for a thorough walkthrough of miceRanger's capabilities, as well as performance benchmarks.
+
+Several vignettes are available through the CRAN website:
+
+\enumerate{
+\item \href{https://cran.r-project.org/web/packages/miceRanger/vignettes/miceAlgorithm.html}{Introduction to the MICE Algorithm}
+\item \href{https://cran.r-project.org/web/packages/miceRanger/vignettes/usingMiceRanger.html}{Filling in Missing Data with miceRanger}
+\item \href{https://cran.r-project.org/web/packages/miceRanger/vignettes/diagnosticPlotting.html}{Diagnostic Plotting and Imputation Accuracy}
+}
+}
+
 \examples{
 # Using Mice to create 5 imputed datasets
 data(iris)
-
 ampIris <- amputeData(iris)
 
 miceObj <- miceRanger(
-  ampIris
+    ampIris
   , m = 2
   , maxiter = 2
   , verbose=FALSE
@@ -97,14 +110,12 @@ cl <- makeCluster(2)
 registerDoParallel(cl)
 
 # Perform mice 
-parTime <- system.time(
-  miceObjPar <- miceRanger(
+miceObjPar <- miceRanger(
     ampIris
-    , m=2
-    , maxiter = 2
-    , parallel = TRUE
-    , verbose = FALSE
-  )
+  , m = 2
+  , maxiter = 2
+  , parallel = TRUE
+  , verbose = FALSE
 )
 stopCluster(cl)
 registerDoSEQ()
