@@ -58,6 +58,25 @@ you can find
       - [Predictive Mean
         Matching](https://github.com/FarrellDay/miceRanger#Predictive-Mean-Matching)
 
+## Installation
+
+You can download the latest stable version from CRAN:
+
+``` r
+install.packages("miceRanger")
+```
+
+You can also download the latest development version from this
+repository:
+
+``` r
+library(devtools)
+devtools::install_github("FarrellDay/miceRanger")
+```
+
+For more information about updates, please see
+[NEWS.md](https://github.com/FarrellDay/miceRanger/blob/master/NEWS.md).
+
 ## Using miceRanger
 
 In these examples we will be looking at a simple example of multiple
@@ -98,7 +117,23 @@ seqTime <- system.time(
     , verbose=FALSE
   )
 )
+miceObj
 ```
+
+    ## 
+    ## Class:          miceDefs
+    ## Datasets:       6 
+    ## Iterations:     5 
+    ## Total Seconds:  4 
+    ## Imputed Cols:   5 
+    ## Estimated Time per Additional Iteration is 5 Seconds 
+    ## Estimated Time per Additional Dataset is 3 Seconds 
+    ## 
+    ## For additional metrics, see the different plotting functions.
+
+Printing the miceDefs object will tell you some high level information,
+including how long the process took, and how long it estimates adding
+more datasets/iterations will take.
 
 ### Running in Parallel
 
@@ -139,12 +174,14 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 15% faster using 2 R back ends."
+    ## [1] "The parallel process ran 12% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. Running in parallel will save you time if you
-are using a high `meanMatchCandidates`, or if you are working with very
-large data.
+are using a high `meanMatchCandidates`, or if you are working with large
+data and use a low . See
+[`benchmarks/`](https://github.com/FarrellDay/miceRanger/tree/master/benchmarks)
+for more details.
 
 ### Adding More Iterations/Datasets
 
