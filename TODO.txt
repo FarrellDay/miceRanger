@@ -1,5 +1,0 @@
-
-1) CAPABILITY - Predictor matrix specification
-	- Added 2020-01-10 in vars.
-2) CAPABILITY - FE functions on features immediately prior to model run.
-3) CAPABILITY - Further flexability in plots

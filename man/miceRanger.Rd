@@ -77,13 +77,8 @@ Returns a miceDefs object, which contains information about the imputation proce
 It is highly recommended to visit the \href{https://github.com/farrellday/miceRanger}{GitHub README} 
 for a thorough walkthrough of miceRanger's capabilities, as well as performance benchmarks.
 
-Several vignettes are available through the CRAN website:
-
-\enumerate{
-\item \href{https://cran.r-project.org/web/packages/miceRanger/vignettes/miceAlgorithm.html}{Introduction to the MICE Algorithm}
-\item \href{https://cran.r-project.org/web/packages/miceRanger/vignettes/usingMiceRanger.html}{Filling in Missing Data with miceRanger}
-\item \href{https://cran.r-project.org/web/packages/miceRanger/vignettes/diagnosticPlotting.html}{Diagnostic Plotting and Imputation Accuracy}
-}
+Several vignettes are also available on \href{https://cran.r-project.org/package=miceRanger}{miceRanger's listing}
+on the CRAN website.
 }
 
 \examples{
