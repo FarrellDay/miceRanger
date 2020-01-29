@@ -12,7 +12,6 @@ miceObj <- miceRanger(
     , Species = c("Sepal.Length","Sepal.Width","Petal.Length","Petal.Width")
    )
   , verbose = FALSE
-  , seed=1991
 )
 
 moComp <- completeData(miceObj)

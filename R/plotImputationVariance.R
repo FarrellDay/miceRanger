@@ -127,16 +127,16 @@ plotImputationVariance <- function(
             , shaded = dens$x <= origDist
           )
           
-          p <- ggplot(dat,aes_string("x","y")) + 
-            geom_line() +
-            geom_area(data=dat[get("shaded")==TRUE],fill="grey",alpha=0.75) +
-            xlab(if(miceObj$callParams$m == 2)"Difference"else"Standard Deviation") +
-            ylab("Density") +
-            ggtitle(paste0(v," - Q=",qtile)) +
-            geom_vline(xintercept=origDist,linetype="dashed")
-          
-          return(p)
-        
+          return(
+            ggplot(dat,aes_string("x","y")) + 
+              geom_line() +
+              geom_area(data=dat[get("shaded")==TRUE],fill="grey",alpha=0.75) +
+              xlab(if(miceObj$callParams$m == 2)"Difference"else"Standard Deviation") +
+              ylab("Density") +
+              ggtitle(paste0(v," - Q=",qtile)) +
+              geom_vline(xintercept=origDist,linetype="dashed")
+          )
+
         }
       )
       
@@ -144,7 +144,15 @@ plotImputationVariance <- function(
       
     } else numList <- NULL
   
-  ggarrange(numList,facList,...)
+  # Since we are returning ggarrange instead of ggplot, we can't
+  # pass NULL to ggarrange, or it will plot a blank space.
+  if (length(numVars) == 0) {
+    ggarrange(facList,...)
+  } else if (length(facVars) == 0) {
+    ggarrange(numList,...)
+  } else {
+    ggarrange(numList,facList,...)
+  }
   
 }
 utils::globalVariables(c("x","..count.."))

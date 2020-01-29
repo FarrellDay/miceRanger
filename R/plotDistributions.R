@@ -28,8 +28,11 @@ plotDistributions <- function(
   
   if (vars[[1]] == 'allCategorical') vars <- names(newClasses[newClasses == "factor"])
   if (vars[[1]] == 'allNumeric') vars <- names(newClasses[newClasses != "factor"])
-  facVars <- newClasses[names(newClasses) %in% vars][newClasses[vars] == "factor"]
-  numVars <- newClasses[vars][newClasses[vars] != "factor"]
+
+  # Only keep class information about variables we are plotting:
+  newClasses <- newClasses[vars]
+  facVars <- newClasses[newClasses == "factor"]
+  numVars <- newClasses[newClasses != "factor"]
 
   if (length(facVars) > 0) {
     facList <- lapply(names(facVars), function(var) {
