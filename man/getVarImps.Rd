@@ -2,12 +2,12 @@
 % Please edit documentation in R/getVarImps.R
 \name{getVarImps}
 \alias{getVarImps}
-\title{getVarImps}
+\title{Get Variable Imputations}
 \usage{
-getVarImps(miceObj, datasets = 1:miceObj$callParams$m, var)
+getVarImps(x, datasets, var)
 }
 \arguments{
-\item{miceObj}{A miceDefs object created by \code{miceRanger}.}
+\item{x}{A \code{miceDefs} or \code{impDefs} object.}
 
 \item{datasets}{The datasets to return. Can be a number, of a numeric vector.}
 
@@ -18,10 +18,13 @@ A matrix of imputations for a single variable.
 Each column represents a different dataset.
 }
 \description{
-Returns all of the imputations for the specified
-datasets and variable.
+Returns imputations for the specified datasets and variable.
+}
+\details{
+These functions exist solely to get at the imputed data for a
+specific dataset and variable.
 }
 \examples{
 data("sampleMiceDefs")
-getVarImps(sampleMiceDefs,"Sepal.Width")
+getVarImps(sampleMiceDefs,var="Sepal.Width")
 }
