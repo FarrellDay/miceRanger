@@ -1,5 +1,5 @@
 ---
-title: "Filling in Missing Data with miceRanger"
+title: "Imputing Missing Data with miceRanger"
 author: "Sam Wilson"
 date: "`r Sys.Date()`"
 output: html_document
@@ -9,7 +9,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-## miceRanger: Fast Imputation with Random Forests
+## Introduction
 ```miceRanger``` performs Multiple Imputation by Chained Equations (MICE) with random forests. It can impute categorical and numeric data without much setup, and has an array of diagnostic plots available.  
 This README contains an introduction to multiple imputation, as well as a thorough walkthrough of the package. More information on MICE can be found in Stef van Buuren's excellent online book, which you can find [here](https://stefvanbuuren.name/fimd/ch-introduction.html).
 
@@ -36,6 +36,7 @@ seqTime <- system.time(
   miceObj <- miceRanger(
       ampIris
     , m=6
+    , returnModels = TRUE
     , verbose=FALSE
   )
 )
@@ -99,6 +100,17 @@ miceObjCustom <- miceRanger(
   , verbose=FALSE
 )
 ```  
+
+### Imputing New Data with Existing Models  
+Multiple Imputation can take a long time. If you wish to impute a dataset using the MICE algorithm, but don't have time to train new models,  it is possible to impute new datasets using a ```miceDefs``` object. The ```impute``` function uses the random forests returned by ```miceRanger``` to perform multiple imputation without updating the random forest at each iteration:
+```{r}
+newDat <- amputeData(iris)
+newImputed <- impute(newDat,miceObj,verbose=FALSE)
+```  
+
+All of the imputation parameters (valueSelector, vars, etc) will be carried over from the original ```miceDefs``` object. When mean matching, the candidate values are pulled from the original dataset.
+
+
 ## Using the Imputed Data
 
 To return the imputed data simply use the ```completeData``` function:
