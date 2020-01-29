@@ -28,10 +28,12 @@ addIterations <- function(
   
   dat <- copy(miceObj$data)
   ds <- crayon::make_style("#4B8E78")
+  m <- miceObj$callParams$m
   varn <- names(miceObj$callParams$vars)
   varp <- unique(unlist(miceObj$callParams$vars))
   vara <- unique(c(varn,varp))
   valueSelector <- miceObj$callParams$valueSelector
+  returnModels <- miceObj$callParams$returnModels
   modelTypes <- ifelse(miceObj$newClasses == "factor","Classification","Regression")
 
   # Define parallelization setup
@@ -43,7 +45,7 @@ addIterations <- function(
   if (!parallel & (getDoParWorkers() > 1)) if (verbose) message("parallel is set to FALSE but there is a back end registered. Process will not be run in parallel.\n")
 
   
-  # Apply the same changes as in miceRanger()
+  # Apply the same changes as in miceRanger() (factor,double)
   rawClasses <- sapply(dat[,vara,with=FALSE],class)
   toFactr <- names(rawClasses[rawClasses=="character"])
   if (any(rawClasses == "character")) {
@@ -57,7 +59,7 @@ addIterations <- function(
   }
   
 
-  # Run iterations for specified iterations. Continue from miceObj.
+  # Run iterations. Continue from miceObj.
   startTime <- Sys.time()
   if (verbose) cat("\nProcess started at",as.character(startTime),"\n")
   datSetList <- runIterations(
@@ -77,22 +79,30 @@ addIterations <- function(
     , oldm = 0
     , oldIt = miceObj$callParams$maxiter
     , startTime
+    , returnModels
     , ...
   )
   endTime <- Sys.time()
   
-  allImps <- if (miceObj$callParams$m>1) lapply(datSetList,function(x) x$dsImps) else list(datSetList$dsImps)
-  allImport <- if (miceObj$callParams$m>1) lapply(datSetList,function(x) x$dsImport) else list(datSetList$dsImport)
-  allError <- if (miceObj$callParams$m>1) lapply(datSetList,function(x) x$dsError) else list(datSetList$dsError)
+  # Foreach won't combine into a list if m = 1.
+  # This keeps the extraction below much more simple.
+  if (m == 1) datSetList <- list(Dataset_1 = datSetList)
+  
+  # Format results 
+  allImps <- lapply(datSetList,function(x) x$dsImps)
+  names(allImps) <- paste0("Dataset_",1:m)
+  allImport <- lapply(datSetList,function(x) x$dsImport)
+  names(allImport) <- paste0("Dataset_",1:m)
+  allError <- lapply(datSetList,function(x) x$dsError)
+  names(allError) <- paste0("Dataset_",1:m)
+  if (returnModels) {
+    finalModels <- lapply(datSetList,function(x) x$dsMod)
+    names(finalModels) <- paste0("Dataset_",1:m)
+  }
   rm(datSetList)
   
-  # And finally, adjust names.
-  names(allImps) <- paste0("Dataset_",1:miceObj$callParams$m)
-  names(allImport) <- paste0("Dataset_",1:miceObj$callParams$m)
-  names(allError) <- paste0("Dataset_",1:miceObj$callParams$m)
-  
   # Combine new iterations with old ones:
-  for (i in 1:miceObj$callParams$m) {
+  for (i in 1:m) {
     allImps[[i]] <- c(miceObj$allImps[[i]],allImps[[i]])
     allImport[[i]] <- c(miceObj$allImport[[i]],allImport[[i]])
     allError[[i]] <- rbind(miceObj$allError[[i]],allError[[i]])
@@ -103,7 +113,7 @@ addIterations <- function(
   finalImport <- lapply(allImport,function(x) x[[length(x)]])
   finalError <- rbindlist(lapply(allError,function(x) x[nrow(x)]))
   setnames(finalError,"iteration","dataset")
-  finalError[,`:=` ("dataset" = 1:miceObj$callParams$m)]
+  finalError$dataset <- 1:m
   
   # Make necessary adjustments to miceObj
   miceObj$callParams$maxiter <- miceObj$callParams$maxiter + iters
@@ -113,6 +123,7 @@ addIterations <- function(
   miceObj$finalImps <- finalImps
   miceObj$finalImport <- finalImport
   miceObj$finalError <- finalError
+  if (returnModels) miceObj$finalModels <- finalModels
   miceObj$imputationTime <- miceObj$imputationTime + round(as.numeric(endTime - startTime))
   
   return(miceObj)

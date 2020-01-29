@@ -7,6 +7,9 @@ Accepted by CRAN: 2020-01-19
 
 ## Package Updates  
 
+#### 1.3.0  
+Implemented 'impute' function.
+
 #### 1.2.1  
 Changed minor formatting in print method.
 Seed issues were causing unit tests to fail on certain OS. Unit tests no longer rely on RNG.

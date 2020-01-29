@@ -28,6 +28,25 @@ Script used:
 
   - rowXtrees.R
 
+### Performance - Imputing New Data
+
+![](graphics/impAccXMissingness.png)<!-- -->
+
+This chart was created to show the behavior of imputation performance
+when new data is imputed with different levels of missingness.  
+The chart above consisted of the following procedure:
+
+1)  A miceDefs object is created with 50 imputed datasets on a dataset
+    with 25% missing values.  
+2)  All 50 datasets are used to impute 9 new datasets, each with
+    different levels of missingness  
+3)  The performance (R-squared for numerics, accuracy for categoricals)
+    is recorded for all 450 datasets
+
+Script used:
+
+  - imputeNew.R
+
 ### To Do
 
 Imputation accuracy benchmarking with MAR, MCAR, MNAR, skewed,

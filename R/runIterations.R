@@ -18,6 +18,7 @@ runIterations <- function(
   , oldm = 0
   , oldIt = 0
   , startTime
+  , returnModels
   , ...
 ) {
   
@@ -32,7 +33,7 @@ runIterations <- function(
   
   # Run iterations
   dsl <- foreach(
-    dataSet = 1:m
+      dataSet = 1:m
     , .options.multicore = mco
     , .combine = list
     , .multicombine = TRUE
@@ -46,6 +47,7 @@ runIterations <- function(
     dsImport <- list()
     dsError <- list()
     dsImps <- list()
+    if (returnModels) dsMod <- list()
     
     # global binding.
     dataSet <- get("dataSet")
@@ -81,15 +83,18 @@ runIterations <- function(
           , ...
         )
         
+        # Keep the model if this is the last iteration.
+        if (iter == maxiter & returnModels) dsMod[[impVar]] <- model
+        
         # Extract information we need from the model.
         pred <- predict(model,dats)$predictions
         iterImps[[impVar]] <- imputeFromPred(
-            pred
+            pred = if (returnProb) pred[missIndx,] else pred[missIndx]
           , modelTypes[impVar]
           , valueSelector[impVar]
           , meanMatchCandidates
-          , dats[!missIndx][,get(impVar)]
-          , missIndx
+          , prior = dats[!missIndx][,get(impVar)]
+          , priorPreds = if (returnProb) pred[!missIndx,] else pred[!missIndx]
         )
         dats[missIndx,(impVar) := iterImps[[impVar]]]
         iterImport[[impVar]] <- as.data.table(as.list(model$variable.importance))
@@ -138,9 +143,10 @@ runIterations <- function(
     
     return(
       list(
-        dsImport = dsImport
+          dsImport = dsImport
         , dsError = dsError
         , dsImps = dsImps
+        , dsMod = if(returnModels) dsMod else NULL
       )
     )
   }

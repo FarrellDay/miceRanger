@@ -2,7 +2,7 @@
 % Please edit documentation in R/miceRanger.R
 \name{miceRanger}
 \alias{miceRanger}
-\title{miceRanger}
+\title{miceRanger: Fast Imputation with Random Forests}
 \usage{
 miceRanger(
   data,
@@ -11,16 +11,16 @@ miceRanger(
   vars,
   valueSelector = c("meanMatch", "value"),
   meanMatchCandidates = pmax(round(nrow(data) * 0.01), 5),
+  returnModels = FALSE,
   parallel = FALSE,
   verbose = TRUE,
   ...
 )
 }
 \arguments{
-\item{data}{The data to be imputed. Can contain variables that are not going to be imputed, which you
-want to use as features.}
+\item{data}{The data to be imputed.}
 
-\item{m}{The number of datasets to produce}
+\item{m}{The number of datasets to produce.}
 
 \item{maxiter}{The number of iterations to run for each dataset.}
 
@@ -28,10 +28,10 @@ want to use as features.}
 \itemize{
   \item {<missing>} If not provided, all columns will be imputed using all columns. If
   a column contains no missing values, it will still be used as a feature to impute missing columns.
-  \item {<Character Vector>} If a character vector of column names is passed, these columns will
+  \item {<character vector>} If a character vector of column names is passed, these columns will
   be imputed using all available columns in the dataset. The order of this vector will determine the 
   order in which the variables are imputed.
- \item {<Named List of Character Vectors>} Predictors can be specified for each variable with named list. 
+ \item {<named list of character vectors>} Predictors can be specified for each variable with named list. 
  List names are the variables to impute. Elements in the vectors should be features used to 
  impute that variable. The order of this list will determine the order in which the variables are imputed.
 }}
@@ -42,6 +42,9 @@ If a named vector is passed, the names must equal the variables to be imputed sp
 
 \item{meanMatchCandidates}{Used for regression. Specifies the number of candidate values 
 which are selected from in the mean matching algorithm.}
+
+\item{returnModels}{Logical. Should the final model for each variable be returned? Set to \code{TRUE}
+to use the CHANGE function, which allows imputing new samples without having to run \code{miceRanger} again.}
 
 \item{parallel}{Should the process run in parallel? Usually not necessary. This process will 
 take advantage of any cluster set up when \code{miceRanger} is called.}
@@ -64,6 +67,7 @@ a miceDefs object, containing the following:
 \item{finalImps}{The final imputations for each dataset.}
 \item{finalImport}{The final variable importance metrics for each dataset.}
 \item{finalError}{The final model error for each variable in every dataset.}
+\item{finalModels}{Only returned if \code{returnModels = TRUE}. A list of \code{ranger} random forests for each dataset/variable.}
 \item{imputationTime}{The total time in seconds taken to create the imputations for the 
   specified datasets and iterations. Does not include any setup time.}
 }

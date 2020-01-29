@@ -1,6 +1,6 @@
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/miceRanger)](http://cran.r-project.org/package=miceRanger)
-[![DEV\_Version\_Badge](https://img.shields.io/badge/Dev-1.2.1-blue.svg)](http://cran.r-project.org/package=miceRanger)
+[![DEV\_Version\_Badge](https://img.shields.io/badge/Dev-1.3.0-blue.svg)](http://cran.r-project.org/package=miceRanger)
 [![MIT
 license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Build
@@ -34,6 +34,8 @@ you can find
         Iterations/Datasets](https://github.com/FarrellDay/miceRanger#adding-more-iterationsdatasets)
       - [Specifying Methods by
         Variable](https://github.com/FarrellDay/miceRanger#Specifying-Predictors-and-Value-Selector-by-Variable)
+      - [Imputing New Data with Existing
+        Models](https://github.com/FarrellDay/miceRanger#Imputing-New-Data-with-Existing-Models)
   - [Diagnostic
     Plotting](https://github.com/FarrellDay/miceRanger#Diagnostic-Plotting)
       - [Imputed
@@ -115,20 +117,20 @@ seqTime <- system.time(
   miceObj <- miceRanger(
       ampIris
     , m=6
+    , returnModels = TRUE
     , verbose=FALSE
   )
 )
 miceObj
 ```
 
-    ## 
     ## Class:          miceDefs
     ## Datasets:       6 
     ## Iterations:     5 
-    ## Total Seconds:  4 
+    ## Total Seconds:  5 
     ## Imputed Cols:   5 
-    ## Estimated Time per Additional Iteration is 5 Seconds 
-    ## Estimated Time per Additional Dataset is 3 Seconds 
+    ## Estimated Time per Additional Iteration is 6 Seconds 
+    ## Estimated Time per Additional Dataset is 4 Seconds 
     ## 
     ## For additional metrics, see the different plotting functions.
 
@@ -175,7 +177,7 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 11% faster using 2 R back ends."
+    ## [1] "The parallel process ran 14% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. Running in parallel will save you time if you
@@ -222,6 +224,34 @@ miceObjCustom <- miceRanger(
   , verbose=FALSE
 )
 ```
+
+### Imputing New Data with Existing Models
+
+Multiple Imputation can take a long time. If you wish to impute a
+dataset using the MICE algorithm, but don’t have time to train new
+models, it is possible to impute new datasets using a `miceDefs` object.
+The `impute` function uses the random forests returned by `miceRanger`
+to perform multiple imputation without updating the random forest at
+each iteration:
+
+``` r
+newDat <- amputeData(iris)
+newImputed <- impute(newDat,miceObj,verbose=FALSE)
+```
+
+All of the imputation parameters (valueSelector, vars, etc) will be
+carried over from the original `miceDefs` object. When mean matching,
+the candidate values are pulled from the original dataset. This method
+returns results just as good as re-running the data through MICE in
+benchmarking:
+
+![](benchmarks/graphics/impAccXMissingness.png)<!-- -->
+
+In the chart above, 50 datasets were created, and then used to impute 9
+new datasets with different levels of missingness. See the
+[`benchmarks/`](https://github.com/FarrellDay/miceRanger/tree/master/benchmarks)
+folder for scripts and more information on this chart. See `?impute` for
+more details on the function.
 
 ## Diagnostic Plotting
 

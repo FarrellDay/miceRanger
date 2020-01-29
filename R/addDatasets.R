@@ -29,11 +29,13 @@ addDatasets <- function(
   
   # Setup
   dat <- copy(miceObj$data)
+  m <- miceObj$callParams$m
   ds <- crayon::make_style("#4B8E78")
   varn <- names(miceObj$callParams$vars)
   varp <- unique(unlist(miceObj$callParams$vars))
   vara <- unique(c(varn,varp))
   valueSelector <- miceObj$callParams$valueSelector
+  returnModels <- miceObj$callParams$returnModels
   modelTypes <- ifelse(miceObj$newClasses[varn] == "factor","Classification","Regression")
   
   # Define parallelization setup
@@ -57,7 +59,6 @@ addDatasets <- function(
     intToDouble <- names(intToDouble[intToDouble])
     dat[,(intToDouble) := lapply(.SD,as.double),.SDcols=intToDouble]
   }
-  
   
   # Fill missing data with random samples from the nonmissing data.
   fillMissing <- function(vec) {
@@ -83,54 +84,69 @@ addDatasets <- function(
     , parallel = parallel
     , mco = mco
     , miceObj = NULL
-    , oldm = miceObj$callParams$m
+    , oldm = m
     , oldIt = 0
     , startTime
+    , returnModels = returnModels
     , ...
   )
   endTime <- Sys.time()
   
+  # Foreach won't combine into a list if m = 1.
+  # This keeps the extraction below much more simple.
+  if (datasets == 1) datSetList <- list(Dataset_1 = datSetList)
+  
   # See if foreach produced errors.
   errorIndx <- sapply(datSetList,function(x) any(class(x) %in% c("simpleError","error")))
   if (any(errorIndx)) {
-    stop(paste0("Evaluation failed with error:",as.character(datSetList[errorIndx][[1]])))
+    stop(
+      paste0(
+        "Evaluation failed with error <",as.character(datSetList[errorIndx][[1]])
+        ,">. This is probably our fault - please open an issue at https://github.com/FarrellDay/miceRanger/issues"
+        ," with a reproduceable example."
+      )
+    )
   }
   
-  allImps <- if (datasets>1) lapply(datSetList,function(x) x$dsImps) else list(datSetList$dsImps)
-  allImport <- if (datasets>1) lapply(datSetList,function(x) x$dsImport) else list(datSetList$dsImport)
-  allError <- if (datasets>1) lapply(datSetList,function(x) x$dsError) else list(datSetList$dsError)
-  rm(datSetList)
-  
-  # And finally, adjust names.
-  datSetNames <- paste0("Dataset_",(miceObj$callParams$m+1):(miceObj$callParams$m+datasets))
+  # Format and merge dataset info we just obtained.
+  datSetNames <- paste0("Dataset_",1:datasets+m)
+  allImps <- lapply(datSetList,function(x) x$dsImps)
   names(allImps) <- datSetNames
-  names(allImport) <- datSetNames
-  names(allError) <- datSetNames
-  
-  
-  # Combine new iterations with old ones:
   allImps <- c(miceObj$allImps,allImps)
+  
+  allImport <- lapply(datSetList,function(x) x$dsImport)
+  names(allImport) <- datSetNames
   allImport <- c(miceObj$allImport,allImport)
+  
+  allError <- lapply(datSetList,function(x) x$dsError)
+  names(allError) <- datSetNames
   allError <- c(miceObj$allError,allError)
+  
+  if (returnModels) {
+    finalModels <- lapply(datSetList,function(x) x$dsMod)
+    names(finalModels) <- datSetNames
+    finalModels <- c(miceObj$finalModels,finalModels)
+  }
+  rm(datSetList)
   
   # Take necessary info from last iteration.
   finalImps <- lapply(allImps,function(x) x[[length(x)]])
   finalImport <- lapply(allImport,function(x) x[[length(x)]])
   finalError <- rbindlist(lapply(allError,function(x) x[nrow(x)]))
   setnames(finalError,"iteration","dataset")
-  finalError[,`:=` ("dataset" = 1:(miceObj$callParams$m+datasets))]
+  finalError[,`:=` ("dataset" = 1:(m+datasets))]
   
   # Make necessary adjustments to miceObj
-  miceObj$callParams$m <- miceObj$callParams$m+datasets
+  miceObj$callParams$m <- m+datasets
   miceObj$allImps <- allImps
   miceObj$allImport <- allImport
   miceObj$allError <- allError
   miceObj$finalImps <- finalImps
   miceObj$finalImport <- finalImport
   miceObj$finalError <- finalError
+  if (returnModels) miceObj$finalModels <- finalModels
   miceObj$imputationTime <- miceObj$imputationTime + round(as.numeric(endTime - startTime))
   
   return(miceObj)
   
 }
-
