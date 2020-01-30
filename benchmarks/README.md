@@ -28,7 +28,7 @@ Script used:
 
   - rowXtrees.R
 
-### Performance - Imputing New Data
+## Performance - Imputing New Data
 
 Existing models can be recycled to impute new datasets with the `impute`
 function. This ends up being much faster, and (nearly) just as accurate
@@ -38,7 +38,7 @@ second shows the performance achieved on the `iris` dataset for
 different data missingness levels, and the third shows the speed
 advantages of imputing new data with existing models vs re-running MICE.
 
-#### Accuracy of Imputations from Existing Models vs New Models
+### Accuracy of Imputations from Existing Models vs New Models
 
 In the following chart, a dataset with 15 variables (a-j numeric, k-p
 categorical) and 51200 rows was imputed using `miceRanger`. A different
@@ -52,7 +52,7 @@ Script used:
 
   - imputeNew\_Time.R
 
-#### Accuracy for different Missingness of data:
+### Accuracy for different Missingness of data:
 
 ![](graphics/impAccXMissingness.png)<!-- -->
 
@@ -71,7 +71,7 @@ Script used:
 
   - imputeNew.R
 
-#### Time to Completion of `miceRanger` vs `impute`
+### Time to Completion of `miceRanger` vs `impute`
 
 ![](graphics/imputeTimeXrows.png)<!-- -->
 
@@ -82,7 +82,7 @@ with the `impute` function. There is overhead associated with calling
 the predict S3 method in ranger related to [this
 issue](https://github.com/imbs-hl/ranger/issues/133).
 
-### To Do
+## To Do
 
 Imputation accuracy benchmarking with MAR, MCAR, MNAR, skewed,
 multimodal data.
