@@ -30,6 +30,30 @@ Script used:
 
 ### Performance - Imputing New Data
 
+Existing models can be recycled to impute new datasets with the `impute`
+function. This ends up being much faster, and (nearly) just as accurate
+as re-running MICE. Three charts are shown below - the first shows the
+accuracy of imputing data with existing models vs. re-running MICE. The
+second shows the performance achieved on the `iris` dataset for
+different data missingness levels, and the third shows the speed
+advantages of imputing new data with existing models vs re-running MICE.
+
+#### Accuracy of Imputations from Existing Models vs New Models
+
+In the following chart, a dataset with 15 variables (a-j numeric, k-p
+categorical) and 51200 rows was imputed using `miceRanger`. A different
+dataset with the same dimensions, but different data, was then imputed
+using the models created with `miceRanger`.
+<img src="graphics/accuracyImputeVsMICE.png" width="800px" />
+Performance is nearly the same between the two. However, as noted below,
+the `impute` function takes much less time.
+
+Script used:
+
+  - imputeNew\_Time.R
+
+#### Accuracy for different Missingness of data:
+
 ![](graphics/impAccXMissingness.png)<!-- -->
 
 This chart was created to show the behavior of imputation performance
@@ -46,6 +70,17 @@ The chart above consisted of the following procedure:
 Script used:
 
   - imputeNew.R
+
+#### Time to Completion of `miceRanger` vs `impute`
+
+![](graphics/imputeTimeXrows.png)<!-- -->
+
+Using the `impute` function is always faster than running MICE on the
+same dataset. However, in most use cases, the dataset used to create a
+`miceDefs` object will be larger than the running that will be imputed
+with the `impute` function. There is overhead associated with calling
+the predict S3 method in ranger related to [this
+issue](https://github.com/imbs-hl/ranger/issues/133).
 
 ### To Do
 
