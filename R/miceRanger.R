@@ -13,7 +13,7 @@
 #'   \item {<character vector>} If a character vector of column names is passed, these columns will
 #'   be imputed using all available columns in the dataset. The order of this vector will determine the 
 #'   order in which the variables are imputed.
-#'  \item {<named list of character vectors>} Predictors can be specified for each variable with named list. 
+#'  \item {<named list of character vectors>} Predictors can be specified for each variable with a named list. 
 #'  List names are the variables to impute. Elements in the vectors should be features used to 
 #'  impute that variable. The order of this list will determine the order in which the variables are imputed.
 #' }
@@ -57,8 +57,13 @@
 #' 
 #' Several vignettes are also available on \href{https://cran.r-project.org/package=miceRanger}{miceRanger's listing}
 #' on the CRAN website.
+#' \enumerate{
+#' \item \href{https://cran.r-project.org/package=miceRanger/vignettes/miceAlgorithm.html}{The MICE Algorithm}
+#' \item \href{https://cran.r-project.org/package=miceRanger/vignettes/usingMiceRanger.html}{Filling in Missing Data with miceRanger}
+#' \item \href{https://cran.r-project.org/package=miceRanger/vignettes/diagnosticPlotting.html}{Diagnostic Plotting}
+#' }
 #' @examples
-#' # Using Mice to create 5 imputed datasets
+#' # Using Mice to create 2 imputed datasets
 #' data(iris)
 #' ampIris <- amputeData(iris)
 #' 

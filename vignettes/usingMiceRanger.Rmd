@@ -10,9 +10,7 @@ vignette: >
 ---
 
 ## Introduction
-```miceRanger``` performs Multiple Imputation by Chained Equations (MICE) with random forests. It can impute categorical and numeric data without much setup, and has an array of diagnostic plots available.  
-This README contains an introduction to multiple imputation, as well as a thorough walkthrough of the package. More information on MICE can be found in Stef van Buuren's excellent online book, which you can find [here](https://stefvanbuuren.name/fimd/ch-introduction.html).
-
+```miceRanger``` performs Multiple Imputation by Chained Equations (MICE) with random forests. It can impute categorical and numeric data without much setup, and has an array of diagnostic plots available. For a much more detailed walkthrough of miceRanger, as well as benchmarks, please see the official [GitHub](https://github.com/farrellday/miceRanger) page.  
 
 ## Using miceRanger  
   
@@ -70,7 +68,7 @@ Let's take a look at the time we saved running in parallel:
 perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```  
-We did not save that much time by running in parallel. ```ranger``` already makes full use of our CPU. Running in parallel will save you time if you are using a high ```meanMatchCandidates```, or if you are working with very large data.
+We did not save that much time (if any) by running in parallel. ```ranger``` already makes full use of our CPU. Running in parallel will save you time if you are using a high ```meanMatchCandidates```, or if you are working with very large data and using a low ```num.trees```.
   
 ### Adding More Iterations/Datasets
 If you plot your data and notice that you need to may need to run more iterations, or you would like more datasets for your analysis, you can use the following functions:  
@@ -108,7 +106,7 @@ newDat <- amputeData(iris)
 newImputed <- impute(newDat,miceObj,verbose=FALSE)
 ```  
 
-All of the imputation parameters (valueSelector, vars, etc) will be carried over from the original ```miceDefs``` object. When mean matching, the candidate values are pulled from the original dataset.
+All of the imputation parameters (valueSelector, vars, etc) will be carried over from the original ```miceDefs``` object. When mean matching, the candidate values are pulled from the original dataset. For performance and timing benchmark information, please see the [benchmarks](https://github.com/FarrellDay/miceRanger/tree/master/benchmarks) page.
 
 
 ## Using the Imputed Data

@@ -10,7 +10,7 @@ vignette: >
 ---
 
 ## Introduction
-Multiple Imputation by Chained Equations 'fills in' (imputes) missing data in a dataset through an iterative series of predictive models. In each iteration, each specified variable in the dataset is imputed using the other variables in the dataset. These iterations should be run until it appears that convergence has been met.  
+Multiple Imputation by Chained Equations is a robust, informative method of dealing with missing data in datasets. The procedure 'fills in' (imputes) missing data in a dataset through an iterative series of predictive models. In each iteration, each specified variable in the dataset is imputed using the other variables in the dataset. These iterations should be run until it appears that convergence has been met.  
 
   
 
@@ -18,7 +18,7 @@ Multiple Imputation by Chained Equations 'fills in' (imputes) missing data in a 
 knitr::include_graphics("MICEalgorithm.png")
 ```  
 
-This process is continued until all specified variables have been imputed. Additional iterations can be run if it appears that the average imputed values have not converged, although no more than 5 iterations are usually necessary.
+This process is continued until all specified variables have been imputed. Additional iterations can be run if it appears that the average imputed values have not converged, although no more than 5 iterations are usually necessary. The accuracy of the imputations will depend on the information density in the dataset. A dataset of completely independent variables with no correlation will not yield accurate imputations. There are diagnostic plots available in ```miceRanger``` which allow the user to determine how valid the imputations may be.
 
 
 ### Predictive Mean Matching

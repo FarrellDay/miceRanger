@@ -127,10 +127,10 @@ miceObj
     ## Class:          miceDefs
     ## Datasets:       6 
     ## Iterations:     5 
-    ## Total Seconds:  5 
+    ## Total Seconds:  4 
     ## Imputed Cols:   5 
-    ## Estimated Time per Additional Iteration is 6 Seconds 
-    ## Estimated Time per Additional Dataset is 4 Seconds 
+    ## Estimated Time per Additional Iteration is 5 Seconds 
+    ## Estimated Time per Additional Dataset is 3 Seconds 
     ## 
     ## For additional metrics, see the different plotting functions.
 
@@ -177,12 +177,12 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 14% faster using 2 R back ends."
+    ## [1] "The parallel process ran 8% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. Running in parallel will save you time if you
 are using a high `meanMatchCandidates`, or if you are working with large
-data and use a low . See
+data and use a low `num.trees`. See
 [`benchmarks/`](https://github.com/FarrellDay/miceRanger/tree/master/benchmarks)
 for more details.
 
@@ -245,7 +245,7 @@ the candidate values are pulled from the original dataset. This method
 returns results just as good as re-running the data through MICE in
 benchmarking:
 
-![](benchmarks/graphics/impAccXMissingness.png)<!-- -->
+<img src="benchmarks/graphics/accuracyImputeVsMICE.png" width="800px" />
 
 In the chart above, 50 datasets were created, and then used to impute 9
 new datasets with different levels of missingness. See the
