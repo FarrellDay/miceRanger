@@ -177,7 +177,7 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 8% faster using 2 R back ends."
+    ## [1] "The parallel process ran 12% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. Running in parallel will save you time if you
@@ -247,8 +247,10 @@ benchmarking:
 
 <img src="benchmarks/graphics/accuracyImputeVsMICE.png" width="800px" />
 
-In the chart above, 50 datasets were created, and then used to impute 9
-new datasets with different levels of missingness. See the
+In the chart above, a dataset with 15 variables (a-j numeric, k-p
+categorical) and 51200 rows was imputed using `miceRanger`. A different
+dataset with the same dimensions, but different data, was then imputed
+using the models created with `miceRanger`. See the
 [`benchmarks/`](https://github.com/FarrellDay/miceRanger/tree/master/benchmarks)
 folder for scripts and more information on this chart. See `?impute` for
 more details on the function.
