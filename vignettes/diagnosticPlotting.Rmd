@@ -7,7 +7,16 @@ vignette: >
   %\VignetteIndexEntry{Diagnostic Plotting}
   %\VignetteEngine{knitr::knitr}
   \usepackage[utf8]{inputenc}
+params:
+  EVAL: !r identical(Sys.getenv("NOT_CRAN"), "true")
 ---
+
+```{r, SETTINGS-knitr, include=FALSE}
+stopifnot(require(knitr))
+opts_chunk$set(
+  eval = if (isTRUE(exists("params"))) params$EVAL else FALSE
+)
+```
 
 ## Setup  
 We use the iris dataset, and ampute the data:  

@@ -7,7 +7,16 @@ vignette: >
   %\VignetteIndexEntry{Filling in Missing Data with miceRanger}
   %\VignetteEngine{knitr::knitr}
   \usepackage[utf8]{inputenc}
+params:
+  EVAL: !r identical(Sys.getenv("NOT_CRAN"), "true")
 ---
+
+```{r, SETTINGS-knitr, include=FALSE}
+stopifnot(require(knitr))
+opts_chunk$set(
+  eval = if (isTRUE(exists("params"))) params$EVAL else FALSE
+)
+```
 
 ## Introduction
 ```miceRanger``` performs Multiple Imputation by Chained Equations (MICE) with random forests. It can impute categorical and numeric data without much setup, and has an array of diagnostic plots available. For a much more detailed walkthrough of miceRanger, as well as benchmarks, please see the official [GitHub](https://github.com/farrellday/miceRanger) page.  

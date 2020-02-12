@@ -6,12 +6,7 @@ Detailed Package Info: https://github.com/farrellday/miceRanger
 
 
 ### Changes
-This submission fixes ERROR's occuring here:  
-https://cran.r-project.org/web/checks/check_results_miceRanger.html  
-Unit tests are failing because of a difference in seed behavior on those systems.
-Removed the reliance on RNG to pass unit test.
-
-Also implemented 'impute' function, with unit tests.
+miceRanger was removed from CRAN because it was taking ~3000 seconds to build on Solaris. I have stopped the unit tests (a significant source of time).
 
 ### Test Environments  
 * Local Windows 10 x64, R 3.6.2  

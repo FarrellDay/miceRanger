@@ -7,7 +7,16 @@ vignette: >
   %\VignetteIndexEntry{The MICE Algorithm}
   %\VignetteEngine{knitr::knitr}
   \usepackage[utf8]{inputenc}
+params:
+  EVAL: !r identical(Sys.getenv("NOT_CRAN"), "true")
 ---
+
+```{r, SETTINGS-knitr, include=FALSE}
+stopifnot(require(knitr))
+opts_chunk$set(
+  eval = if (isTRUE(exists("params"))) params$EVAL else FALSE
+)
+```
 
 ## Introduction
 Multiple Imputation by Chained Equations is a robust, informative method of dealing with missing data in datasets. The procedure 'fills in' (imputes) missing data in a dataset through an iterative series of predictive models. In each iteration, each specified variable in the dataset is imputed using the other variables in the dataset. These iterations should be run until it appears that convergence has been met.  
