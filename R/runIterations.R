@@ -92,7 +92,7 @@ runIterations <- function(
             pred = if (returnProb) pred[missIndx,] else pred[missIndx]
           , modelTypes[impVar]
           , valueSelector[impVar]
-          , meanMatchCandidates
+          , if (modelTypes[impVar] == "Regression") meanMatchCandidates[[impVar]] else NULL
           , prior = dats[!missIndx][,get(impVar)]
           , priorPreds = if (returnProb) pred[!missIndx,] else pred[!missIndx]
         )

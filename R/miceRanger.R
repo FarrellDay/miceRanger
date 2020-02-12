@@ -20,8 +20,10 @@
 #' @param valueSelector How to select the value to be imputed from the model predictions. 
 #' Can be "meanMatching", "value", or a named vector containing a mixture of those values.
 #' If a named vector is passed, the names must equal the variables to be imputed specified in \code{vars}.
-#' @param meanMatchCandidates Used for regression. Specifies the number of candidate values 
-#' which are selected from in the mean matching algorithm.
+#' @param meanMatchCandidates Specifies the number of candidate values which are selected from in the 
+#' mean matching algorithm. Can be either specified as an integer or a named integer vector for different 
+#' values by variable. If a named integer vector is passed, the names of the vector must contain at a 
+#' minimum the names of the numeric variables imputed using \code{valueSelector = "meanMatch"}.
 #' @param returnModels Logical. Should the final model for each variable be returned? Set to \code{TRUE}
 #' to use the CHANGE function, which allows imputing new samples without having to run \code{miceRanger} again.
 #' @param parallel Should the process run in parallel? Usually not necessary. This process will 
@@ -122,7 +124,6 @@ miceRanger <- function(
     if (any(!varp %in% names(data))) stop("at least 1 predictor provided in vars is not a column in data.")
   } else stop("vars not recognized. Please see ?miceRanger for available options for vars.")
   
-  
   # Get names of vars to impute
   varn <- names(vars)
   
@@ -219,7 +220,6 @@ miceRanger <- function(
     intToDouble <- names(intToDouble[intToDouble])
     dat[,(intToDouble) := lapply(.SD,as.double),.SDcols=intToDouble]
   }
-
   
   # Fill missing data with random samples from the nonmissing data.
   for (v in vara) set(dat,i=which(naWhere[,v]),j=v,value=fillMissing(sum(naWhere[,v]),dat[[v]]))
@@ -227,6 +227,21 @@ miceRanger <- function(
   # Keep track of our new classes and the type of model.
   newClasses <- sapply(dat[,vara,with=FALSE],class)
   modelTypes <- ifelse(newClasses[varn] == "factor","Classification","Regression")
+  regModelVars <- names(modelTypes[modelTypes == "Regression"])
+  
+  # Define meanMatchCandidates parameter
+  if (is.null(names(meanMatchCandidates)) & length(regModelVars) > 0) {
+    meanMatchCandidates <- rep(meanMatchCandidates,length(regModelVars))
+    names(meanMatchCandidates) <- regModelVars
+  } else {
+    if (!all(regModelVars %in% names(meanMatchCandidates))) {
+      stop("Names of meanMatchCandidates does not contain all numeric variables scheduled to be imputed.")
+    }
+    if (any(sapply(regModelVars,function(x) !sum(!is.na(naWhere[,x])) >= meanMatchCandidates[[x]]))) {
+          stop("Not enough non-missing values to satisfy meanMatchCandidates in at least one variable.")
+    }
+    meanMatchCandidates <- meanMatchCandidates[regModelVars]
+  }
   
   startTime <- Sys.time()
   if (verbose) cat("\nProcess started at",as.character(startTime),"\n")

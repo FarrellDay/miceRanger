@@ -55,6 +55,7 @@ impute <- function(
   vara <- unique(c(varn,varp))
   valueSelector <- miceObj$callParams$valueSelector
   returnModels <- miceObj$callParams$returnModels
+  meanMatchCandidates <- miceObj$callParams$meanMatchCandidates
   modelTypes <- ifelse(miceObj$newClasses[varn] == "factor","Classification","Regression")
   
   if (!all(vara %in% names(data))) stop("Columns used in the original imputation process are missing from this dataset.")
@@ -157,7 +158,7 @@ impute <- function(
               pred = pred
             , modelType = modelTypes[[impVar]]
             , valueSelector = valueSelector[[impVar]]
-            , meanMatchCandidates = miceObj$callParams$meanMatchCandidates
+            , meanMatchCandidates = if (modelTypes[impVar] == "Regression") meanMatchCandidates[impVar] else NULL
             , prior = prior
             , priorPreds = priorPreds
           )

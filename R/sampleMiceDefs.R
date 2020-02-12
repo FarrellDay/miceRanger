@@ -4,15 +4,12 @@
 #' @source 
 #' set.seed(1991)
 #' data(iris)
-#' ampIris <- amputeData(iris)
+#' ampIris <- amputeData(iris,cols = c("Petal.Width","Species"))
 #' sampleMiceDefs <- miceRanger(
 #'   ampIris
 #'   ,m=3
 #'   ,maxiter=3
-#'   ,vars=list(
-#'     Petal.Width = c("Sepal.Length","Sepal.Width","Petal.Length","Species")
-#'     , Species = c("Sepal.Length","Sepal.Width","Petal.Length","Petal.Width")
-#'   )
+#'   ,vars=c("Petal.Width","Species")
 #' )
 #' @format A miceDefs object. See ```?miceRanger``` for details.
 #' @examples

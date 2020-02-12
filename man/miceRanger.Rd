@@ -40,8 +40,10 @@ miceRanger(
 Can be "meanMatching", "value", or a named vector containing a mixture of those values.
 If a named vector is passed, the names must equal the variables to be imputed specified in \code{vars}.}
 
-\item{meanMatchCandidates}{Used for regression. Specifies the number of candidate values 
-which are selected from in the mean matching algorithm.}
+\item{meanMatchCandidates}{Specifies the number of candidate values which are selected from in the 
+mean matching algorithm. Can be either specified as an integer or a named integer vector for different 
+values by variable. If a named integer vector is passed, the names of the vector must contain at a 
+minimum the names of the numeric variables imputed using \code{valueSelector = "meanMatch"}.}
 
 \item{returnModels}{Logical. Should the final model for each variable be returned? Set to \code{TRUE}
 to use the CHANGE function, which allows imputing new samples without having to run \code{miceRanger} again.}
