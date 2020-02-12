@@ -1,6 +1,6 @@
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/miceRanger)](http://cran.r-project.org/package=miceRanger)
-[![DEV\_Version\_Badge](https://img.shields.io/badge/Dev-1.3.0-blue.svg)](http://cran.r-project.org/package=miceRanger)
+[![DEV\_Version\_Badge](https://img.shields.io/badge/Dev-1.3.1-blue.svg)](http://cran.r-project.org/package=miceRanger)
 [![MIT
 license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Build
@@ -129,10 +129,10 @@ miceObj
     ## Class:          miceDefs
     ## Datasets:       6 
     ## Iterations:     5 
-    ## Total Seconds:  4 
+    ## Total Seconds:  5 
     ## Imputed Cols:   5 
-    ## Estimated Time per Additional Iteration is 5 Seconds 
-    ## Estimated Time per Additional Dataset is 3 Seconds 
+    ## Estimated Time per Additional Iteration is 6 Seconds 
+    ## Estimated Time per Additional Dataset is 4 Seconds 
     ## 
     ## For additional metrics, see the different plotting functions.
 
@@ -179,7 +179,7 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 19% faster using 2 R back ends."
+    ## [1] "The parallel process ran 8% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. Running in parallel will save you time if you
@@ -480,7 +480,8 @@ types of inference:
 datapoint from the original, nonmissing data which has a predicted value
 close to the predicted value of the missing sample. The closest N
 (`meanMatchCandidates` parameter in `miceRanger()`) values are chosen as
-candidates, from which a value is chosen at random. Going into more
+candidates, from which a value is chosen at random. This can be
+specified on a column-by-column basis in `miceRanger`. Going into more
 detail from our example above, we see how this works in practice:
 
 <img src="vignettes/PMM.png" style="display: block; margin: auto;" />
