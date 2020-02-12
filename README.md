@@ -8,6 +8,8 @@ Status](https://travis-ci.com/FarrellDay/miceRanger.svg?branch=master)](https://
 [![Coverage
 Status](https://codecov.io/gh/FarrellDay/miceRanger/branch/master/graph/badge.svg)](https://codecov.io/gh/FarrellDay/miceRanger/branch/master)
 
+### Bulletin: miceRanger has been temporarily removed from CRAN. This issue will be resolved shortly. For now, you can install from this repository with devtools::install\_github(“FarrellDay/miceRanger”).
+
 ## miceRanger: Fast Imputation with Random Forests
 
 <a href='https://github.com/FarrellDay/miceRanger'><img src='icon.png' align="right" height="300" /></a>
@@ -177,7 +179,7 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 12% faster using 2 R back ends."
+    ## [1] "The parallel process ran 19% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. Running in parallel will save you time if you
