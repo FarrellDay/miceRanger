@@ -16,7 +16,10 @@
 #' @return an object of class \code{ggarrange}.
 #' @examples 
 #' data("sampleMiceDefs")
-#' plotImputationVariance(sampleMiceDefs)
+#' plotImputationVariance(
+#'   sampleMiceDefs
+#'   , monteCarloSimulations = 100
+#' )
 #' @export
 plotImputationVariance <- function(
     miceObj

@@ -35,5 +35,8 @@ nonmissing standard deviation for the original data.
 }
 \examples{
 data("sampleMiceDefs")
-plotImputationVariance(sampleMiceDefs)
+plotImputationVariance(
+  sampleMiceDefs
+  , monteCarloSimulations = 100
+)
 }
