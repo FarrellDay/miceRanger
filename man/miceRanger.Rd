@@ -83,11 +83,6 @@ for a thorough walkthrough of miceRanger's capabilities, as well as performance 
 
 Several vignettes are also available on \href{https://cran.r-project.org/package=miceRanger}{miceRanger's listing}
 on the CRAN website.
-\enumerate{
-\item \href{https://cran.r-project.org/package=miceRanger/vignettes/miceAlgorithm.html}{The MICE Algorithm}
-\item \href{https://cran.r-project.org/package=miceRanger/vignettes/usingMiceRanger.html}{Filling in Missing Data with miceRanger}
-\item \href{https://cran.r-project.org/package=miceRanger/vignettes/diagnosticPlotting.html}{Diagnostic Plotting}
-}
 }
 
 \examples{
