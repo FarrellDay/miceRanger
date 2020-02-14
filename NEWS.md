@@ -7,6 +7,11 @@ Accepted by CRAN: 2020-01-19
 
 ## Package Updates  
 
+#### 1.3.2
+Fixed bug in plotImputationVariance() if characters were passed in original data. (#2)
+Fixed bug in completeData() around valueSelector. (#3)
+If a numeric variable is being imputed with valueSelector 'value', it doesn't need a meanMatchCandidates entry (#4)
+
 #### 1.3.0  
 Implemented 'impute' function.
 
