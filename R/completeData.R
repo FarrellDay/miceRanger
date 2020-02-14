@@ -22,7 +22,7 @@ completeData <- function(
   varn <- names(miceObj$callParams$vars)
   rawClasses <- miceObj$rawClasses
   
-  intToDouble <- rawClasses[varn] == "integer" & miceObj$callParams$valueSelector == "value"
+  intToDouble <- rawClasses[varn] == "integer" & miceObj$callParams$valueSelector[varn] == "value"
   if(any(intToDouble)) {
     intToDouble <- names(intToDouble[intToDouble])
     if (verbose) message(paste0(paste0(intToDouble,collapse = ","))," are integers, and will be converted to double because valueSelector = 'value'")

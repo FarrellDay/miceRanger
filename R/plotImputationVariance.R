@@ -77,7 +77,7 @@ plotImputationVariance <- function(
         , v=v
       )
       vec <- miceObj$data[!miceObj$naWhere[,v],get(v)]
-      numLvls <- length(levels(vec))
+      numLvls <- length(unique(vec))
       psibleUnqDraws <- pmin(miceObj$callParams$m,numLvls)
         
       monteCarlo = sapply(

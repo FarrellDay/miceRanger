@@ -127,16 +127,6 @@ miceRanger <- function(
   # Get names of vars to impute
   varn <- names(vars)
   
-  # Define Value Selector
-  if(is.null(names(valueSelector))) {
-    if (!valueSelector[[1]] %in% c("meanMatch","value")) stop("valueSelector not recognized")
-    valueSelector <- rep(valueSelector[[1]],length(vars))
-    names(valueSelector) <- varn
-  } else {
-    if(!setequal(names(vars),names(valueSelector))) stop("Names in valueSelector do not match variables to impute specified by vars.")
-    if(!any(valueSelector %in% c("meanMatch","value"))) stop("All elements in valueSelector should be either 'meanMatch' or 'value'.")
-  }
-  
   # Create a copy of dataset so original is not modified.
   # This dataset is used to assign by reference throughout the process.
   # Fastest method, at the expense of duplicating the dataset.
@@ -172,6 +162,17 @@ miceRanger <- function(
   
   # All vars
   vara <- unique(c(varn,varp))
+  
+  
+  # Define Value Selector
+  if(is.null(names(valueSelector))) {
+    if (!valueSelector[[1]] %in% c("meanMatch","value")) stop("valueSelector not recognized")
+    valueSelector <- rep(valueSelector[[1]],length(vars))
+    names(valueSelector) <- varn
+  } else {
+    if(!setequal(names(vars),names(valueSelector))) stop("Names in valueSelector do not match variables to impute specified by vars.")
+    if(!any(valueSelector %in% c("meanMatch","value"))) stop("All elements in valueSelector should be either 'meanMatch' or 'value'.")
+  }
   
   # These variables will be filled in randomly, and then remain 
   # unchanged throughout the process. This is usually not a good idea.
@@ -228,20 +229,23 @@ miceRanger <- function(
   newClasses <- sapply(dat[,vara,with=FALSE],class)
   modelTypes <- ifelse(newClasses[varn] == "factor","Classification","Regression")
   regModelVars <- names(modelTypes[modelTypes == "Regression"])
+  needsMeanMatch <- intersect(regModelVars,names(valueSelector[valueSelector == "meanMatch"]))
   
   # Define meanMatchCandidates parameter
-  if (is.null(names(meanMatchCandidates)) & length(regModelVars) > 0) {
-    meanMatchCandidates <- rep(meanMatchCandidates,length(regModelVars))
-    names(meanMatchCandidates) <- regModelVars
+  if (is.null(names(meanMatchCandidates)) & length(needsMeanMatch) > 0) {
+    meanMatchCandidates <- rep(meanMatchCandidates,length(needsMeanMatch))
+    names(meanMatchCandidates) <- needsMeanMatch
   } else {
-    if (!all(regModelVars %in% names(meanMatchCandidates))) {
-      stop("Names of meanMatchCandidates does not contain all numeric variables scheduled to be imputed.")
+    if (!all(needsMeanMatch %in% names(meanMatchCandidates))) {
+      stop("Names of meanMatchCandidates does not contain all numeric variables scheduled to be imputed with valueSelector = 'meanMatch'.")
     }
-    if (any(sapply(regModelVars,function(x) !sum(!is.na(naWhere[,x])) >= meanMatchCandidates[[x]]))) {
+    if (any(sapply(needsMeanMatch,function(x) !sum(!is.na(naWhere[,x])) >= meanMatchCandidates[[x]]))) {
           stop("Not enough non-missing values to satisfy meanMatchCandidates in at least one variable.")
     }
-    meanMatchCandidates <- meanMatchCandidates[regModelVars]
   }
+  
+  # Only keep mean match candidates for variables that are using mean matching.
+  meanMatchCandidates <- meanMatchCandidates[needsMeanMatch]
   
   startTime <- Sys.time()
   if (verbose) cat("\nProcess started at",as.character(startTime),"\n")

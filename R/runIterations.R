@@ -86,13 +86,18 @@ runIterations <- function(
         # Keep the model if this is the last iteration.
         if (iter == maxiter & returnModels) dsMod[[impVar]] <- model
         
+        mmc <- if (modelTypes[impVar] == "Regression" & valueSelector[impVar] == "meanMatch")  {
+          meanMatchCandidates[[impVar]] 
+        } else NULL
+          
+        
         # Extract information we need from the model.
         pred <- predict(model,dats)$predictions
         iterImps[[impVar]] <- imputeFromPred(
             pred = if (returnProb) pred[missIndx,] else pred[missIndx]
           , modelTypes[impVar]
           , valueSelector[impVar]
-          , if (modelTypes[impVar] == "Regression") meanMatchCandidates[[impVar]] else NULL
+          , mmc
           , prior = dats[!missIndx][,get(impVar)]
           , priorPreds = if (returnProb) pred[!missIndx,] else pred[!missIndx]
         )
