@@ -8,8 +8,6 @@ Status](https://travis-ci.com/FarrellDay/miceRanger.svg?branch=master)](https://
 [![Coverage
 Status](https://codecov.io/gh/FarrellDay/miceRanger/branch/master/graph/badge.svg)](https://codecov.io/gh/FarrellDay/miceRanger/branch/master)
 
-### Bulletin: miceRanger has been temporarily removed from CRAN. This issue will be resolved shortly. For now, you can install from this repository with devtools::install\_github(“FarrellDay/miceRanger”).
-
 ## miceRanger: Fast Imputation with Random Forests
 
 <a href='https://github.com/FarrellDay/miceRanger'><img src='icon.png' align="right" height="300" /></a>
@@ -179,7 +177,7 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 8% faster using 2 R back ends."
+    ## [1] "The parallel process ran 16% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. Running in parallel will save you time if you
@@ -204,8 +202,9 @@ miceObj <- addDatasets(miceObj,datasets=1,verbose=FALSE)
 It is possible to customize our imputation procedure by variable. By
 passing a named list to `vars`, you can specify the predictors for each
 variable to impute. You can also select which variables should be
-imputed using mean matching by passing a named vector to
-`valueSelector`.
+imputed using mean matching, as well as the mean matching candidates, by
+passing a named vector to `valueSelector` and `meanMatchCandidates`,
+respectively:
 
 ``` r
 v <- list(
@@ -218,11 +217,16 @@ pmm <- c(
   , Sepal.Length = "value"
   , Species = "meanMatch"
 )
+mmc <- c(
+    Sepal.Width = 4
+  , Species = 10
+)
 
 miceObjCustom <- miceRanger(
     ampIris
   , vars = v
   , valueSelector = pmm
+  , meanMatchCandidates = mmc
   , verbose=FALSE
 )
 ```
