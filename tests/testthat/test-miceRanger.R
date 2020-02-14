@@ -16,13 +16,21 @@ test_that(
       , Sepal.Length = "value"
       , Species = "meanMatch"
     )
+    mmc <- c(
+      Sepal.Width = 4
+      , Species = 10
+    )
     
-    miceObj <- miceRanger(
+    miceObjCustom <- miceRanger(
       ampDat
       , vars = v
       , valueSelector = pmm
+      , meanMatchCandidates = mmc
       , verbose=FALSE
     )
+    
+    compDat <- completeData(miceObjCustom)
+    
   }
   
 )
