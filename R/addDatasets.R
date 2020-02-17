@@ -38,15 +38,6 @@ addDatasets <- function(
   returnModels <- miceObj$callParams$returnModels
   modelTypes <- ifelse(miceObj$newClasses[varn] == "factor","Classification","Regression")
   
-  # Define parallelization setup
-  ParMethod <- function(x) if(x) {`%dopar%`} else {`%do%`}
-  `%op%` <- ParMethod(parallel)
-  if(parallel) Workers <- getDoParWorkers() else Workers <- 1
-  mco <- list(preschedule=FALSE)
-  if (parallel & (getDoParWorkers() == 1)) stop("parallel is set to TRUE but no back end is registered.")
-  if (!parallel & (getDoParWorkers() > 1)) if (verbose) message("parallel is set to FALSE but there is a back end registered. Process will not be run in parallel.\n")
-  
-  
   # Apply the same changes as in miceRanger()
   rawClasses <- sapply(dat[,vara,with=FALSE],class)
   toFactr <- names(rawClasses[rawClasses=="character"])
@@ -80,9 +71,7 @@ addDatasets <- function(
     , meanMatchCandidates = miceObj$callParams$meanMatchCandidates
     , modelTypes = modelTypes
     , verbose = verbose
-    , ParMethod = ParMethod
     , parallel = parallel
-    , mco = mco
     , miceObj = NULL
     , oldm = m
     , oldIt = 0

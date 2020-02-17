@@ -46,7 +46,9 @@ values by variable. If a named integer vector is passed, the names of the vector
 minimum the names of the numeric variables imputed using \code{valueSelector = "meanMatch"}.}
 
 \item{returnModels}{Logical. Should the final model for each variable be returned? Set to \code{TRUE}
-to use the CHANGE function, which allows imputing new samples without having to run \code{miceRanger} again.}
+to use the \code{impute} function, which allows imputing new samples without having to run \code{miceRanger} again.
+Setting to TRUE can cause the returned \code{miceDefs} object to take up a lot of memory. Use only if
+you plan on using the \code{impute} function.}
 
 \item{parallel}{Should the process run in parallel? Usually not necessary. This process will 
 take advantage of any cluster set up when \code{miceRanger} is called.}
@@ -85,10 +87,17 @@ for a thorough walkthrough of miceRanger's capabilities, as well as performance 
 
 Several vignettes are also available on \href{https://cran.r-project.org/package=miceRanger}{miceRanger's listing}
 on the CRAN website.
+\enumerate{
+  \item \href{https://cran.r-project.org/package=miceRanger/vignettes/miceAlgorithm.html}{The MICE Algorithm}
+  \item \href{https://cran.r-project.org/package=miceRanger/vignettes/usingMiceRanger.html}{Imputing Missing Data with miceRanger}
+  \item \href{https://cran.r-project.org/package=miceRanger/vignettes/diagnosticPlotting.html}{Diagnostic Plotting}
+}
 }
 
 \examples{
-# Using Mice to create 2 imputed datasets
+#################
+## Simple Example
+
 data(iris)
 ampIris <- amputeData(iris)
 
@@ -102,7 +111,9 @@ miceObj <- miceRanger(
 )
 
 \donttest{
-# Run in parallel
+##################
+## Run in parallel
+
 data(iris)
 ampIris <- amputeData(iris)
 
@@ -120,5 +131,42 @@ miceObjPar <- miceRanger(
 )
 stopCluster(cl)
 registerDoSEQ()
+
+
+############################
+## Complex Imputation Schema
+
+data(iris)
+ampIris <- amputeData(iris)
+
+# Define variables to impute, as well as their predictors
+v <- list(
+  Sepal.Width = c("Sepal.Length","Petal.Width","Species")
+  , Sepal.Length = c("Sepal.Width","Petal.Width")
+  , Species = c("Sepal.Width")
+)
+
+# Specify mean matching for certain variables.
+vs <- c(
+  Sepal.Width = "meanMatch"
+  , Sepal.Length = "value"
+  , Species = "meanMatch"
+)
+
+# Different mean matching candidates per variable.
+mmc <- c(
+  Sepal.Width = 4
+  , Species = 10
+)
+
+miceObjCustom <- miceRanger(
+    ampIris
+  , m = 2
+  , maxiter = 2
+  , vars = v
+  , valueSelector = vs
+  , meanMatchCandidates = mmc
+  , verbose=FALSE
+)
 }
 }

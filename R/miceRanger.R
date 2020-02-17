@@ -25,7 +25,9 @@
 #' values by variable. If a named integer vector is passed, the names of the vector must contain at a 
 #' minimum the names of the numeric variables imputed using \code{valueSelector = "meanMatch"}.
 #' @param returnModels Logical. Should the final model for each variable be returned? Set to \code{TRUE}
-#' to use the CHANGE function, which allows imputing new samples without having to run \code{miceRanger} again.
+#' to use the \code{impute} function, which allows imputing new samples without having to run \code{miceRanger} again.
+#' Setting to TRUE can cause the returned \code{miceDefs} object to take up a lot of memory. Use only if
+#' you plan on using the \code{impute} function.
 #' @param parallel Should the process run in parallel? Usually not necessary. This process will 
 #' take advantage of any cluster set up when \code{miceRanger} is called.
 #' @param verbose should progress be printed?
@@ -59,9 +61,16 @@
 #' 
 #' Several vignettes are also available on \href{https://cran.r-project.org/package=miceRanger}{miceRanger's listing}
 #' on the CRAN website.
+#' \enumerate{
+#'   \item \href{https://cran.r-project.org/package=miceRanger/vignettes/miceAlgorithm.html}{The MICE Algorithm}
+#'   \item \href{https://cran.r-project.org/package=miceRanger/vignettes/usingMiceRanger.html}{Imputing Missing Data with miceRanger}
+#'   \item \href{https://cran.r-project.org/package=miceRanger/vignettes/diagnosticPlotting.html}{Diagnostic Plotting}
+#' }
 #' 
 #' @examples
-#' # Using Mice to create 2 imputed datasets
+#' #################
+#' ## Simple Example
+#' 
 #' data(iris)
 #' ampIris <- amputeData(iris)
 #' 
@@ -75,7 +84,9 @@
 #' )
 #' 
 #' \donttest{
-#' # Run in parallel
+#' ##################
+#' ## Run in parallel
+#' 
 #' data(iris)
 #' ampIris <- amputeData(iris)
 #' 
@@ -93,6 +104,43 @@
 #' )
 #' stopCluster(cl)
 #' registerDoSEQ()
+#' 
+#' 
+#' ############################
+#' ## Complex Imputation Schema
+#' 
+#' data(iris)
+#' ampIris <- amputeData(iris)
+#' 
+#' # Define variables to impute, as well as their predictors
+#' v <- list(
+#'   Sepal.Width = c("Sepal.Length","Petal.Width","Species")
+#'   , Sepal.Length = c("Sepal.Width","Petal.Width")
+#'   , Species = c("Sepal.Width")
+#' )
+#' 
+#' # Specify mean matching for certain variables.
+#' vs <- c(
+#'   Sepal.Width = "meanMatch"
+#'   , Sepal.Length = "value"
+#'   , Species = "meanMatch"
+#' )
+#' 
+#' # Different mean matching candidates per variable.
+#' mmc <- c(
+#'   Sepal.Width = 4
+#'   , Species = 10
+#' )
+#' 
+#' miceObjCustom <- miceRanger(
+#'     ampIris
+#'   , m = 2
+#'   , maxiter = 2
+#'   , vars = v
+#'   , valueSelector = vs
+#'   , meanMatchCandidates = mmc
+#'   , verbose=FALSE
+#' )
 #' }
 #' @export
 miceRanger <- function(
@@ -112,41 +160,31 @@ miceRanger <- function(
   # Define Variables.
   if (missing(vars)) {
     vars <- sapply(names(data),function(x) setdiff(names(data),x),USE.NAMES = TRUE,simplify = FALSE)
-    varp <- names(data)
-  } else if (class(vars) == "character") {
-    vars <- sapply(vars,function(x) setdiff(names(data),x),USE.NAMES = TRUE,simplify = FALSE)
-    varp <- names(data)
-  } else if (class(vars) == "list") {
-    if (is.null(names(vars))) stop("If a list is specified for vars, the list names must be the variables to impute.")
-    if (any(sapply(names(vars),function(x) x %in% vars[[x]]))) stop("A variable cannot be used to impute itself, check vars.")
-    if (any(!names(vars) %in% names(data))) stop("at least 1 name in vars is not a column in data.")
-    varp <- unique(unlist(vars))
-    if (any(!varp %in% names(data))) stop("at least 1 predictor provided in vars is not a column in data.")
-  } else stop("vars not recognized. Please see ?miceRanger for available options for vars.")
+  } else {
+    vars <- defineVars(vars,names(data))
+  }
   
-  # Get names of vars to impute
+  # 4 Objects are tracked which pertain to the variables
+      # vars - A list. Names are variables to impute, elements are vectors of predictors. 
+      # varn - Character vector of variables to impute
+      # varp - Character vector of all predictor variables
+      # vara - Character vector of all variables which will be used in any context.
   varn <- names(vars)
+  varp <- unique(unlist(vars))
+  vara <- unique(c(varn,varp))
   
   # Create a copy of dataset so original is not modified.
   # This dataset is used to assign by reference throughout the process.
   # Fastest method, at the expense of duplicating the dataset.
   dat <- copy(data)
   setDT(dat)
-
-  # Define parallelization setup
-  ParMethod <- function(x) if(x) {`%dopar%`} else {`%do%`}
-  `%op%` <- ParMethod(parallel)
-  mco <- list(preschedule=FALSE)
-  if (parallel & (getDoParWorkers() == 1)) stop("parallel is set to TRUE but no back end is registered.")
-  if (!parallel & (getDoParWorkers() > 1)) if (verbose) message("parallel is set to FALSE but there is a back end registered. Process will not be run in parallel.")
-  
   
   # Missing Value Fidelity.
+  # Re-define variable setup if needed.
   naWhere <- is.na(dat)
   if (any(apply(naWhere,2,sum) == nrow(dat))) stop("At least 1 column in data contains all missing values.")
   missingCounts <- apply(dat[,varn,with=FALSE],MARGIN = 2,function(x) sum(is.na(x)))
   if (all(missingCounts == 0)) stop("There are no missing values in this dataset.")
-  if (any(missingCounts/nrow(dat) >= 0.9) & verbose) message("At least one variable contains less than 10% nonmissing values.")
   takeOut <- missingCounts == 0 & names(missingCounts) %in% varn
   if (sum(takeOut) > 0) {
     if(verbose) {
@@ -158,21 +196,11 @@ miceRanger <- function(
     vars <- vars[!takeOut]
     varn <- names(vars)
     varp <- unique(unlist(vars))
+    vara <- unique(c(varn,varp))
   }
-  
-  # All vars
-  vara <- unique(c(varn,varp))
-  
   
   # Define Value Selector
-  if(is.null(names(valueSelector))) {
-    if (!valueSelector[[1]] %in% c("meanMatch","value")) stop("valueSelector not recognized")
-    valueSelector <- rep(valueSelector[[1]],length(vars))
-    names(valueSelector) <- varn
-  } else {
-    if(!setequal(names(vars),names(valueSelector))) stop("Names in valueSelector do not match variables to impute specified by vars.")
-    if(!any(valueSelector %in% c("meanMatch","value"))) stop("All elements in valueSelector should be either 'meanMatch' or 'value'.")
-  }
+  valueSelector <- defineValueSelector(valueSelector,vars)
   
   # These variables will be filled in randomly, and then remain 
   # unchanged throughout the process. This is usually not a good idea.
@@ -189,15 +217,7 @@ miceRanger <- function(
   }
   
   # These characters in variable names cause problems when plotting:
-  specCharsExist <- sapply(
-      c(" ","-","/","=","!","@","%","<",">")
-    , function(v) any(lengths(regmatches(vara, gregexpr(v, vara))) > 0)
-  )
-  if(any(specCharsExist)) {
-    message("Some variable names contain characters which will cause parsing issues when plotting: (' ','-','/',...).\nContinue? [y/n]")
-    line <- readline()
-    if(tolower(line)=="y") invisible() else stop("Process Stopped By User.")
-  }
+  checkSpecChars(vara)
   
   # Only keep columns that can be used.
   if (any(!names(dat) %in% vara)) dat[,(setdiff(names(dat),vara)) := NULL]
@@ -228,24 +248,9 @@ miceRanger <- function(
   # Keep track of our new classes and the type of model.
   newClasses <- sapply(dat[,vara,with=FALSE],class)
   modelTypes <- ifelse(newClasses[varn] == "factor","Classification","Regression")
-  regModelVars <- names(modelTypes[modelTypes == "Regression"])
-  needsMeanMatch <- intersect(regModelVars,names(valueSelector[valueSelector == "meanMatch"]))
-  
-  # Define meanMatchCandidates parameter
-  if (is.null(names(meanMatchCandidates)) & length(needsMeanMatch) > 0) {
-    meanMatchCandidates <- rep(meanMatchCandidates,length(needsMeanMatch))
-    names(meanMatchCandidates) <- needsMeanMatch
-  } else {
-    if (!all(needsMeanMatch %in% names(meanMatchCandidates))) {
-      stop("Names of meanMatchCandidates does not contain all numeric variables scheduled to be imputed with valueSelector = 'meanMatch'.")
-    }
-    if (any(sapply(needsMeanMatch,function(x) !sum(!is.na(naWhere[,x])) >= meanMatchCandidates[[x]]))) {
-          stop("Not enough non-missing values to satisfy meanMatchCandidates in at least one variable.")
-    }
-  }
-  
-  # Only keep mean match candidates for variables that are using mean matching.
-  meanMatchCandidates <- meanMatchCandidates[needsMeanMatch]
+
+  # Define meanMatchCandidates
+  meanMatchCandidates <- defineMMC(meanMatchCandidates,modelTypes,valueSelector,naWhere)
   
   startTime <- Sys.time()
   if (verbose) cat("\nProcess started at",as.character(startTime),"\n")
@@ -260,9 +265,7 @@ miceRanger <- function(
     , meanMatchCandidates
     , modelTypes
     , verbose
-    , ParMethod
     , parallel
-    , mco
     , miceObj = NULL
     , oldm = 0
     , oldIt = 0

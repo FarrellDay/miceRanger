@@ -144,9 +144,11 @@ impute <- function(
             , compDat
           )$predictions
           prior <- compDat[[impVar]]
+          mmc <- meanMatchCandidates[[impVar]] 
         } else {
           priorPreds <- NULL
           prior <- NULL
+          mmc <- NULL
         }
         
         # Update values in corresponding data.table
@@ -158,7 +160,7 @@ impute <- function(
               pred = pred
             , modelType = modelTypes[[impVar]]
             , valueSelector = valueSelector[[impVar]]
-            , meanMatchCandidates = if (modelTypes[impVar] == "Regression") meanMatchCandidates[impVar] else NULL
+            , meanMatchCandidates = mmc
             , prior = prior
             , priorPreds = priorPreds
           )
