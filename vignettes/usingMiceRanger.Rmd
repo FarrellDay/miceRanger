@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: html_document
 vignette: >
   %\VignetteIndexEntry{Filling in Missing Data with miceRanger}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 params:
   EVAL: !r identical(Sys.getenv("NOT_CRAN"), "true")
@@ -19,7 +19,7 @@ opts_chunk$set(
 ```
 
 ## Introduction
-```miceRanger``` performs Multiple Imputation by Chained Equations (MICE) with random forests. It can impute categorical and numeric data without much setup, and has an array of diagnostic plots available. For a much more detailed walkthrough of miceRanger, as well as benchmarks, please see the official [GitHub](https://github.com/farrellday/miceRanger) page.  
+```miceRanger``` performs Multiple Imputation by Chained Equations (MICE) with random forests. It can impute categorical and numeric data without much setup, and has an array of diagnostic plots available. This vignette provides examples and syntax needed to impute a dataset under different conditions. For a much more detailed walkthrough of miceRanger, as well as benchmarks, please see the official [GitHub](https://github.com/farrellday/miceRanger) page.  
 
 ## Using miceRanger  
   
@@ -86,8 +86,8 @@ miceObj <- addIterations(miceObj,iters=2,verbose=FALSE)
 miceObj <- addDatasets(miceObj,datasets=1,verbose=FALSE)
 ```  
 
-### Specifying Predictors and Value Selector by Variable  
-It is possible to customize our imputation procedure by variable. By passing a named list to ```vars```, you can specify the predictors for each variable to impute. You can also select which variables should be imputed using mean matching by passing a named vector to ```valueSelector```.
+### Specifying Predictors, Value Selector, and Mean Matching Candidates by Variable  
+It is possible to customize our imputation procedure by variable. By passing a named list to ```vars```, you can specify the predictors for each variable to impute. You can also select which variables should be imputed using mean matching, as well as the mean matching candidates, by passing a named vector to ```valueSelector``` and ```meanMatchCandidates```, respectively:
 ```{r customSetup}
 v <- list(
   Sepal.Width = c("Sepal.Length","Petal.Width","Species")
@@ -99,11 +99,16 @@ pmm <- c(
   , Sepal.Length = "value"
   , Species = "meanMatch"
 )
+mmc <- c(
+    Sepal.Width = 4
+  , Species = 10
+)
 
 miceObjCustom <- miceRanger(
     ampIris
   , vars = v
   , valueSelector = pmm
+  , meanMatchCandidates = mmc
   , verbose=FALSE
 )
 ```  

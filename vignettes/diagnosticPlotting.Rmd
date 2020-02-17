@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: html_document
 vignette: >
   %\VignetteIndexEntry{Diagnostic Plotting}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 params:
   EVAL: !r identical(Sys.getenv("NOT_CRAN"), "true")
@@ -15,6 +15,7 @@ params:
 stopifnot(require(knitr))
 opts_chunk$set(
   eval = if (isTRUE(exists("params"))) params$EVAL else FALSE
+  , dev = "png"
 )
 ```
 
