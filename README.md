@@ -1,6 +1,6 @@
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/miceRanger)](http://cran.r-project.org/package=miceRanger)
-[![DEV\_Version\_Badge](https://img.shields.io/badge/Dev-1.3.2-blue.svg)](http://cran.r-project.org/package=miceRanger)
+[![DEV\_Version\_Badge](https://img.shields.io/badge/Dev-1.3.3-blue.svg)](http://cran.r-project.org/package=miceRanger)
 [![MIT
 license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Build
@@ -177,7 +177,7 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 12% faster using 2 R back ends."
+    ## [1] "The parallel process ran 13% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. Running in parallel will save you time if you
@@ -212,7 +212,7 @@ v <- list(
   , Sepal.Length = c("Sepal.Width","Petal.Width")
   , Species = c("Sepal.Width")
 )
-pmm <- c(
+vs <- c(
     Sepal.Width = "meanMatch"
   , Sepal.Length = "value"
   , Species = "meanMatch"
@@ -225,7 +225,7 @@ mmc <- c(
 miceObjCustom <- miceRanger(
     ampIris
   , vars = v
-  , valueSelector = pmm
+  , valueSelector = vs
   , meanMatchCandidates = mmc
   , verbose=FALSE
 )

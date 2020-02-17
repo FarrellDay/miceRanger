@@ -1,12 +1,13 @@
 cran-comments
 ================
 
-## miceRanger 1.3.0
+## miceRanger 1.3.3
 Detailed Package Info: https://github.com/farrellday/miceRanger
 
 
 ### Changes
-miceRanger was removed from CRAN because it was taking ~3000 seconds to build on Solaris. I have stopped the unit tests (a significant source of time) and the re-building of vignettes.
+meanMatchCandidates can be specified by variable.  
+Minor bug fixes.
 
 ### Test Environments  
 * Local Windows 10 x64, R 3.6.2  
