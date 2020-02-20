@@ -57,6 +57,8 @@ test_that(
     miceObjCustomT <- addIterations(miceObjCustom,iters=2,verbose=FALSE)
     expect_equal(miceObjCustomT$callParams$maxiter,7)
     
+    miceObjCustom
+    
   }
   
 )
