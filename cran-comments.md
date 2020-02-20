@@ -1,7 +1,7 @@
 cran-comments
 ================
 
-## miceRanger 1.3.3
+## miceRanger 1.3.4
 Detailed Package Info: https://github.com/farrellday/miceRanger
 
 

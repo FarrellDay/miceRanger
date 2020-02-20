@@ -7,6 +7,9 @@ Accepted by CRAN: 2020-01-19
 
 ## Package Updates  
 
+#### 1.3.4  
+Use utils::tail() to get finalError last row doesn't fail for single var imputations.
+
 #### 1.3.3  
 Added comprehensive unit test  
 Code clean up
