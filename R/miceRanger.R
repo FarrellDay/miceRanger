@@ -33,6 +33,7 @@
 #' @param verbose should progress be printed?
 #' @param ... other parameters passed to \code{ranger()} to control forest growth.
 #' @importFrom data.table as.data.table rbindlist setcolorder setnames copy setDT set
+#' @importFrom utils tail
 #' @importFrom ranger ranger
 #' @importFrom stats predict
 #' @importFrom crayon make_style
@@ -307,7 +308,7 @@ miceRanger <- function(
   # Take necessary info from last iteration.
   finalImps <- lapply(allImps,function(x) x[[length(x)]])
   finalImport <- lapply(allImport,function(x) x[[length(x)]])
-  finalError <- rbindlist(lapply(allError,function(x) x[nrow(x)]))
+  finalError <- rbindlist(lapply(allError,function(x) tail(x,1)))
   setnames(finalError,"iteration","dataset")
   finalError$dataset <- 1:m
   
