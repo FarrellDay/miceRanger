@@ -12,7 +12,7 @@
 #' Each column represents a different dataset.
 #' @examples
 #' data("sampleMiceDefs")
-#' getVarImps(sampleMiceDefs,var="Sepal.Width")
+#' getVarImps(sampleMiceDefs,var="Petal.Width")
 #' @export
 getVarImps <- function(x,datasets,var) UseMethod("getVarImps",x)
 

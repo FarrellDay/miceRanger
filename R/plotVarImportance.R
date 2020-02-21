@@ -1,5 +1,7 @@
 #' @title plotVarImportance
-#' @description Plot the variable importance for each imputed variable.
+#' @description Plot the variable importance for each imputed variable. The values
+#' represent the variables on the top axis importance in imputing the variables on
+#' the left axis.
 #' @param miceObj an object of class miceDefs, created by the miceRanger function.
 #' @param display How do you want to display variable importance?
 #' \itemize{
@@ -7,10 +9,9 @@
 #'   \item {"Absolute"} Displays the variable importance as is. May be highly skewed.
 #' }
 #' @param dataset The dataset you want to plot the variable importance of.
-#' @param ... Other arguments passed to corrplot.
+#' @param ... Other arguments passed to \code{corrplot()}.
 #' @importFrom corrplot corrplot
 #' @importFrom grDevices colorRampPalette
-#' @return nothing.
 #' @examples 
 #' data("sampleMiceDefs")
 #' plotVarImportance(sampleMiceDefs)

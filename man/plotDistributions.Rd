@@ -7,7 +7,6 @@
 plotDistributions(
   miceObj,
   vars = names(miceObj$callParams$vars),
-  title = NULL,
   dotsize = 0.5,
   ...
 )
@@ -17,8 +16,6 @@ plotDistributions(
 
 \item{vars}{the variables you want to plot. Default is to plot all variables. Can be a vector of
 variable names, or one of 'allNumeric' or 'allCategorical'}
-
-\item{title}{The title of the plot. Default is no title.}
 
 \item{dotsize}{Passed to \code{geom_dotplot()}. Depending on the number of graphs plotted, you may want to
 change the dot size for categorical variables.}

@@ -26,5 +26,5 @@ specific dataset and variable.
 }
 \examples{
 data("sampleMiceDefs")
-getVarImps(sampleMiceDefs,var="Sepal.Width")
+getVarImps(sampleMiceDefs,var="Petal.Width")
 }

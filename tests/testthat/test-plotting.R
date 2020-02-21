@@ -6,6 +6,10 @@ test_that(
   , {
     skip_on_cran()
     pCorr <- plotCorrelations(sampleMiceDefs)
+    pCorr <- plotCorrelations(sampleMiceDefs,factCorrMetric = "TschuprowT",numbCorrMetric = "spearman")
+    pCorr <- plotCorrelations(sampleMiceDefs,numbCorrMetric = "Rsquared")
+    pCorr <- plotCorrelations(sampleMiceDefs,numbCorrMetric = "kendall")
+    pCorr <- plotCorrelations(sampleMiceDefs)
     pDist <- plotDistributions(sampleMiceDefs)
     pImpV <- plotImputationVariance(sampleMiceDefs)
     pMoEr <- plotModelError(sampleMiceDefs)

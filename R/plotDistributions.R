@@ -3,7 +3,6 @@
 #' @param miceObj an object of class miceDefs, created by the miceRanger function.
 #' @param vars the variables you want to plot. Default is to plot all variables. Can be a vector of
 #' variable names, or one of 'allNumeric' or 'allCategorical'
-#' @param title The title of the plot. Default is no title.
 #' @param dotsize Passed to \code{geom_dotplot()}. Depending on the number of graphs plotted, you may want to
 #' change the dot size for categorical variables.
 #' @param ... additional parameters passed to \code{ggarrange()}.
@@ -18,7 +17,6 @@
 plotDistributions <- function(
     miceObj
   , vars = names(miceObj$callParams$vars)
-  , title=NULL
   , dotsize = 0.5
   , ...
 ) {

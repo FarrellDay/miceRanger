@@ -26,7 +26,12 @@ By default, the same as the number of iterations currently in \code{miceObj}.}
 \item{verbose}{should progress be printed?}
 }
 \value{
-an object of class impDefs, which contains information about the imputation process.
+An object of class impDefs, which contains information about the imputation process.
+\item{callParams}{The parameters of the object.}
+\item{data}{The original data provided by the user.}
+\item{naWhere}{Logical index of missing data, having the same dimensions as \code{data}.}
+\item{missingCounts}{The number of missing values for each variable.}
+\item{imputedData}{A list of imputed datasets.}
 }
 \description{
 Impute data using the information from an existing \code{miceDefs} object.

@@ -20,7 +20,13 @@
 #' @param iterations The number of iterations to run. 
 #' By default, the same as the number of iterations currently in \code{miceObj}.
 #' @param verbose should progress be printed?
-#' @return an object of class impDefs, which contains information about the imputation process.
+#' @return An object of class impDefs, which contains information about the imputation process.
+#' \item{callParams}{The parameters of the object.}
+#' \item{data}{The original data provided by the user.}
+#' \item{naWhere}{Logical index of missing data, having the same dimensions as \code{data}.}
+#' \item{missingCounts}{The number of missing values for each variable.}
+#' \item{imputedData}{A list of imputed datasets.}
+#' 
 #' @examples
 #' ampDat <- amputeData(iris)
 #' miceObj <- miceRanger(ampDat,1,1,returnModels=TRUE,verbose=FALSE)

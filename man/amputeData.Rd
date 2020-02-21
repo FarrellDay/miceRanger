@@ -14,10 +14,10 @@ amputeData(data, perc = 0.1, cols = names(data))
 \item{cols}{The columns to ampute.}
 }
 \value{
-The same dataset with random values set to NA in \code{vars}.
+The same dataset with random values in \code{cols} set to NA.
 }
 \description{
-randomly imputes data.
+Randomly amputes data (MCAR).
 }
 \examples{
 data(iris)

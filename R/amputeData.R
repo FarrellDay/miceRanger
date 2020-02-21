@@ -1,10 +1,10 @@
 #' @title amputeData
-#' @description randomly imputes data.
+#' @description Randomly amputes data (MCAR).
 #' @param data The data to be amputed
 #' @param perc A scalar. The percentage (0-1) to be amputed.
 #' @param cols The columns to ampute.
 #' @importFrom data.table := .SD setDT
-#' @return The same dataset with random values set to NA in \code{vars}.
+#' @return The same dataset with random values in \code{cols} set to NA.
 #' @examples
 #' data(iris)
 #' head(iris,10)

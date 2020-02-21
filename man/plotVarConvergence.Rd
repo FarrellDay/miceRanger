@@ -7,7 +7,7 @@
 plotVarConvergence(miceObj, vars = names(miceObj$callParams$vars), ...)
 }
 \arguments{
-\item{miceObj}{an object of class miceDefs, created by the miceRanger function.}
+\item{miceObj}{an object of class \code{miceDefs}, created by the \code{miceRanger} function.}
 
 \item{vars}{the variables you want to plot. Default is to plot all variables. Can be a vector of
 variable names, or one of 'allNumeric' or 'allCategorical'}

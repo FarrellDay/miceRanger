@@ -1,5 +1,5 @@
 #' @title plotModelError
-#' @description Plot the Out Of Bag model error for specified variables over all tierations.
+#' @description Plot the Out Of Bag model error for specified variables over all iterations.
 #' @param miceObj an object of class miceDefs, created by the miceRanger function.
 #' @param vars the variables you want to plot. Default is to plot all variables. Can be a vector of
 #' variable names, or one of 'allNumeric' or 'allCategorical'

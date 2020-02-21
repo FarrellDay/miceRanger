@@ -1,5 +1,5 @@
 #' @title completeData
-#' @description Return the completed datasets.
+#' @description Return imputed datasets from a \code{miceDefs} object.
 #' @param miceObj an object of class miceDefs.
 #' @param datasets a vector of the datasets you want to return.
 #' @param verbose a warning is thrown if integers are converted to doubles.

@@ -18,7 +18,7 @@ To suppress this warning, set to \code{FALSE}.}
 A list of imputed datasets.
 }
 \description{
-Return the completed datasets.
+Return imputed datasets from a \code{miceDefs} object.
 }
 \examples{
 data("sampleMiceDefs")

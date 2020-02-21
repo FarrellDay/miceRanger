@@ -25,7 +25,7 @@ variable names, or one of 'allNumeric' or 'allCategorical'}
 an object of class \code{ggarrange}.
 }
 \description{
-Plot the Out Of Bag model error for specified variables over all tierations.
+Plot the Out Of Bag model error for specified variables over all iterations.
 }
 \examples{
 data("sampleMiceDefs")

@@ -2,7 +2,7 @@
 #' @description Plot the evolution of the dispersion and center of each variable.
 #' For numeric variables, the center is the mean, and the dispersion is the standard deviation.
 #' For categorical variables, the center is the mode, and the dispersion is the entropy of the distribution.
-#' @param miceObj an object of class miceDefs, created by the miceRanger function.
+#' @param miceObj an object of class \code{miceDefs}, created by the \code{miceRanger} function.
 #' @param vars the variables you want to plot. Default is to plot all variables. Can be a vector of
 #' variable names, or one of 'allNumeric' or 'allCategorical'
 #' @param ... options passed to \code{ggarrange()}

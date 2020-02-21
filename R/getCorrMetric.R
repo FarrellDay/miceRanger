@@ -82,9 +82,7 @@ getNumbCorrMetric <- function(met) {
   } else if (met == "Rsquared") {
     return(
       list(
-        corrMet = function(a,b) {
           corrMet = function(a,b) stats::cor(a,b,method="pearson")^2
-        }
         , ylb = "\nR-Squared"
       )
     )

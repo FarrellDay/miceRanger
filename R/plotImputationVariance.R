@@ -1,7 +1,8 @@
 #' @title plotImputationVariance
-#' @description plots the distribution of the difference between datasets of the imputed values.
+#' @description Plots the distribution of the difference between datasets of the imputed values.
 #' For categorical variables, the distribution of the number of distinct levels imputed for each sample
-#' is shown next to the expected hypergeometric distribution, if the imputation was completely random.
+#' is shown next to the distribution of unique draws from that variable in the nonmissing data, given that
+#' the draws were completely random.
 #' For numeric variables, the density of the standard deviation (between datasets) of imputations is 
 #' plotted. The shaded area represents the samples that had a standard deviation lower than the total
 #' nonmissing standard deviation for the original data.
@@ -10,7 +11,7 @@
 #' variable names, or one of 'allNumeric' or 'allCategorical'
 #' @param monteCarloSimulations The number of simulations to run to determine the distribution of
 #' unique categorical levels drawn if the draws were completely random.
-#' @param ... additional parameters passed to \code{ggarrange}.
+#' @param ... additional parameters passed to \code{ggarrange()}.
 #' @importFrom data.table data.table
 #' @importFrom ggplot2 position_nudge geom_area xlab ylab ggtitle scale_x_discrete geom_vline
 #' @return an object of class \code{ggarrange}.

@@ -22,13 +22,12 @@ plotVarImportance(
 
 \item{dataset}{The dataset you want to plot the variable importance of.}
 
-\item{...}{Other arguments passed to corrplot.}
-}
-\value{
-nothing.
+\item{...}{Other arguments passed to \code{corrplot()}.}
 }
 \description{
-Plot the variable importance for each imputed variable.
+Plot the variable importance for each imputed variable. The values
+represent the variables on the top axis importance in imputing the variables on
+the left axis.
 }
 \examples{
 data("sampleMiceDefs")
