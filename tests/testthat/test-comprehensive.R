@@ -57,7 +57,9 @@ test_that(
     miceObjCustomT <- addIterations(miceObjCustom,iters=2,verbose=FALSE)
     expect_equal(miceObjCustomT$callParams$maxiter,7)
     
-    miceObjCustom
+    print(miceObjCustom)
+    varImps <- getVarImps(miceObjCustom,var = "Sepal.Width")
+    expect_equal(dim(varImps),c(15,5))
     
   }
   
