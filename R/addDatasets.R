@@ -10,9 +10,9 @@
 #' @return an updated miceDefs object with additional datasets.
 #' @examples
 #' data("sampleMiceDefs")
-#' miceObj <- addIterations(
+#' miceObj <- addDatasets(
 #'     sampleMiceDefs
-#'   , iters = 2
+#'   , datasets = 1
 #'   , verbose = FALSE
 #'   , num.threads = 1
 #'   , num.trees=5
