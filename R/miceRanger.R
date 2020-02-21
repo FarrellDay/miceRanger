@@ -77,8 +77,8 @@
 #' 
 #' miceObj <- miceRanger(
 #'     ampIris
-#'   , m = 2
-#'   , maxiter = 2
+#'   , m = 1
+#'   , maxiter = 1
 #'   , verbose=FALSE
 #'   , num.threads = 1
 #'   , num.trees=5
@@ -135,8 +135,8 @@
 #' 
 #' miceObjCustom <- miceRanger(
 #'     ampIris
-#'   , m = 2
-#'   , maxiter = 2
+#'   , m = 1
+#'   , maxiter = 1
 #'   , vars = v
 #'   , valueSelector = vs
 #'   , meanMatchCandidates = mmc
