@@ -15,8 +15,8 @@ print.miceDefs <- function(x,...) {
   cat("Iterations:    ",maxiter,"\n")
   cat("Total Seconds: ",imputationTime,"\n")
   cat("Imputed Cols:  ",length(x$callParams$vars),"\n")
-  cat("Estimated Time per Additional Iteration is",round(imputationTime/maxiter*m),"Seconds","\n")
-  cat("Estimated Time per Additional Dataset is",round(imputationTime/m*maxiter),"Seconds","\n\n")
+  cat("Estimated Time per Additional Iteration is",round(imputationTime/maxiter),"Seconds","\n")
+  cat("Estimated Time per Additional Dataset is",round(imputationTime/m),"Seconds","\n\n")
   cat("For additional metrics, see the different plotting functions.")
   invisible(x)
 }
