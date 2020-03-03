@@ -5,6 +5,7 @@
 license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Build
 Status](https://travis-ci.com/FarrellDay/miceRanger.svg?branch=master)](https://travis-ci.com/FarrellDay/miceRanger)
+[![CRAN\_Downloads](https://cranlogs.r-pkg.org/badges/miceRanger)](https://CRAN.R-project.org/package=miceRanger)
 [![Coverage
 Status](https://codecov.io/gh/FarrellDay/miceRanger/branch/master/graph/badge.svg)](https://codecov.io/gh/FarrellDay/miceRanger/branch/master)
 
@@ -32,8 +33,8 @@ you can find
         Parallel](https://github.com/FarrellDay/miceRanger#Running-in-Parallel)
       - [Adding
         Iterations/Datasets](https://github.com/FarrellDay/miceRanger#adding-more-iterationsdatasets)
-      - [Specifying Methods by
-        Variable](https://github.com/FarrellDay/miceRanger#Specifying-Predictors-and-Value-Selector-by-Variable)
+      - [Custom Imputation
+        Schemas](https://github.com/FarrellDay/miceRanger#Creating-a-Custom-Imputation-Schema)
       - [Imputing New Data with Existing
         Models](https://github.com/FarrellDay/miceRanger#Imputing-New-Data-with-Existing-Models)
   - [Diagnostic
@@ -127,10 +128,10 @@ miceObj
     ## Class:          miceDefs
     ## Datasets:       6 
     ## Iterations:     5 
-    ## Total Seconds:  4 
+    ## Total Seconds:  5 
     ## Imputed Cols:   5 
-    ## Estimated Time per Additional Iteration is 5 Seconds 
-    ## Estimated Time per Additional Dataset is 3 Seconds 
+    ## Estimated Time per Additional Iteration is 1 Seconds 
+    ## Estimated Time per Additional Dataset is 1 Seconds 
     ## 
     ## For additional metrics, see the different plotting functions.
 
@@ -177,7 +178,7 @@ perc <- round(1-parTime[[3]]/seqTime[[3]],2)*100
 print(paste0("The parallel process ran ",perc,"% faster using 2 R back ends."))
 ```
 
-    ## [1] "The parallel process ran 12% faster using 2 R back ends."
+    ## [1] "The parallel process ran 19% faster using 2 R back ends."
 
 We did not save that much time by running in parallel. `ranger` already
 makes full use of our CPU. Running in parallel will save you time if you
@@ -197,7 +198,7 @@ miceObj <- addIterations(miceObj,iters=2,verbose=FALSE)
 miceObj <- addDatasets(miceObj,datasets=1,verbose=FALSE)
 ```
 
-### Specifying Predictors and Value Selector by Variable
+### Creating a Custom Imputation Schema
 
 It is possible to customize our imputation procedure by variable. By
 passing a named list to `vars`, you can specify the predictors for each
