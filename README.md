@@ -1,6 +1,6 @@
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/miceRanger)](http://cran.r-project.org/package=miceRanger)
-[![DEV\_Version\_Badge](https://img.shields.io/badge/Dev-1.3.4-blue.svg)](http://cran.r-project.org/package=miceRanger)
+[![DEV\_Version\_Badge](https://img.shields.io/badge/Dev-1.3.5-blue.svg)](http://cran.r-project.org/package=miceRanger)
 [![MIT
 license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Build
