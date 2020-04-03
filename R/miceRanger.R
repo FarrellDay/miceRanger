@@ -3,7 +3,7 @@
 #' Performs multiple imputation by chained random forests.
 #' Returns a miceDefs object, which contains information about the imputation process.
 #' 
-#' @param data The data to be imputed.
+#' @param data A data.frame or data.table to be imputed.
 #' @param m The number of datasets to produce.
 #' @param maxiter The number of iterations to run for each dataset.
 #' @param vars Specifies which and how variables should be imputed. Can be specified in 3 different ways:
@@ -40,7 +40,7 @@
 #' @import foreach
 #' @return a miceDefs object, containing the following:
 #' \item{callParams}{The parameters of the object.}
-#' \item{data}{The original data provided by the user.}
+#' \item{data}{The original data provided by the user, cast to a data.table.}
 #' \item{naWhere}{Logical index of missing data, having the same dimensions as \code{data}.}
 #' \item{missingCounts}{The number of missing values for each variable}
 #' \item{rawClasses}{The original classes provided in \code{data}}
@@ -321,7 +321,7 @@ miceRanger <- function(
   miceDefs$callParams$valueSelector <- valueSelector
   miceDefs$callParams$meanMatchCandidates <- meanMatchCandidates
   miceDefs$callParams$returnModels <- returnModels
-  miceDefs$data <- data
+  miceDefs$data <- data.table(data)
   miceDefs$naWhere <- naWhere
   miceDefs$missingCounts <- missingCounts
   miceDefs$rawClasses <- rawClasses

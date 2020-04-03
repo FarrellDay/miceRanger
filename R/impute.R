@@ -187,7 +187,7 @@ impute <- function(
   impDefs$callParams$vars <- vars
   impDefs$callParams$datasets <- datasets
   impDefs$callParams$iterations <- iterations
-  impDefs$data <- data
+  impDefs$data <- data.table(data)
   impDefs$naWhere <- naWhere
   impDefs$missingCounts <- missingCounts
   impDefs$imputedData <- dat

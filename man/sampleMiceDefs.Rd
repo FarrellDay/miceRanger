@@ -5,7 +5,9 @@
 \alias{sampleMiceDefs}
 \title{Sample miceDefs object built off of iris dataset.
 Included so examples don't run for too long.}
-\format{A miceDefs object. See ```?miceRanger``` for details.}
+\format{
+A miceDefs object. See ```?miceRanger``` for details.
+}
 \source{
 set.seed(1991)
 data(iris)

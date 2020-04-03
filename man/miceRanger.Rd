@@ -18,7 +18,7 @@ miceRanger(
 )
 }
 \arguments{
-\item{data}{The data to be imputed.}
+\item{data}{A data.frame or data.table to be imputed.}
 
 \item{m}{The number of datasets to produce.}
 
@@ -60,7 +60,7 @@ take advantage of any cluster set up when \code{miceRanger} is called.}
 \value{
 a miceDefs object, containing the following:
 \item{callParams}{The parameters of the object.}
-\item{data}{The original data provided by the user.}
+\item{data}{The original data provided by the user, cast to a data.table.}
 \item{naWhere}{Logical index of missing data, having the same dimensions as \code{data}.}
 \item{missingCounts}{The number of missing values for each variable}
 \item{rawClasses}{The original classes provided in \code{data}}
