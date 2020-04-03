@@ -7,6 +7,10 @@ Accepted by CRAN: 2020-01-19
 
 ## Package Updates  
 
+#### 1.3.5
+Fixed error in calculation of expected time in print.miceDefs.
+Raw data cast to data.table in miceDefs and impDefs objects.
+
 #### 1.3.4  
 Use utils::tail() to get finalError last row doesn't fail for single var imputations.
 

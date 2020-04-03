@@ -1,13 +1,12 @@
 cran-comments
 ================
 
-## miceRanger 1.3.4
+## miceRanger 1.3.5
 Detailed Package Info: https://github.com/farrellday/miceRanger
 
 
 ### Changes
-meanMatchCandidates can be specified by variable.  
-Minor bug fixes.
+minor bug fixes
 
 ### Test Environments  
 * Local Windows 10 x64, R 3.6.2  
