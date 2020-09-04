@@ -20,6 +20,8 @@ imputeFromPred <- function(
     return(pred)
   } else {
     if (modelType == "Classification") {
+      # transform vector to 1 row matrix
+      if (class(pred) == "numeric") pred <- t(pred)
       lvls <- colnames(pred)
       return(apply(pred,MARGIN=1,function(x) sample(lvls,prob=x,size=1)))
     } else if (modelType == "Regression") {

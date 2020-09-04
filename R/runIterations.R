@@ -94,9 +94,9 @@ runIterations <- function(
         pred <- predict(model,dats)$predictions
         iterImps[[impVar]] <- imputeFromPred(
             pred = if (returnProb) pred[missIndx,] else pred[missIndx]
-          , modelTypes[impVar]
-          , valueSelector[impVar]
-          , mmc
+          , modelType = modelTypes[impVar]
+          , valueSelector = valueSelector[impVar]
+          , meanMatchCandidates = mmc
           , prior = dats[!missIndx][,get(impVar)]
           , priorPreds = if (returnProb) pred[!missIndx,] else pred[!missIndx]
         )
@@ -107,6 +107,8 @@ runIterations <- function(
         } else {
           iterError[[impVar]] <- 1-model$prediction.error
         }
+        
+        rm(model)
         
       }
       
