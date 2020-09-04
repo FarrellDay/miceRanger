@@ -1,6 +1,6 @@
 Package: miceRanger
 Title: Multiple Imputation by Chained Equations with Random Forests
-Version: 1.3.5
+Version: 1.3.6
 Authors@R: 
     person(given = "Sam",
            family = "Wilson",
