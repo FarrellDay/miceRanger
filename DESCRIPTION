@@ -1,6 +1,6 @@
 Package: miceRanger
 Title: Multiple Imputation by Chained Equations with Random Forests
-Version: 1.3.6
+Version: 1.4.0
 Authors@R: 
     person(given = "Sam",
            family = "Wilson",
@@ -28,5 +28,5 @@ Suggests:
     rmarkdown,
     doParallel,
     testthat (>= 2.1.0)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr

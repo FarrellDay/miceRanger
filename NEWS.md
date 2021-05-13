@@ -7,6 +7,11 @@ Accepted by CRAN: 2020-01-19
 
 ## Package Updates  
 
+#### 1.4.0
+Default max.depth parameter for ranger is now 10. Originally, this was the default
+unlimited. However, this causes ranger models to take up a lot of memory. Setting
+max.depth to 10 saves space and still allows for accurate models.
+
 #### 1.3.5
 Fixed error in calculation of expected time in print.miceDefs.
 Raw data cast to data.table in miceDefs and impDefs objects.
