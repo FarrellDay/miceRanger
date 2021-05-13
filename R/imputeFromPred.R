@@ -20,8 +20,9 @@ imputeFromPred <- function(
     return(pred)
   } else {
     if (modelType == "Classification") {
-      # transform vector to 1 row matrix
-      if (class(pred) == "numeric") pred <- t(pred)
+      # Transform vector to 1 row matrix. Ranger returns a vector
+      # if there is only 1 value to predict. Needs to be a matrix
+      if ("numeric" %in% class(pred)) pred <- t(pred)
       lvls <- colnames(pred)
       return(apply(pred,MARGIN=1,function(x) sample(lvls,prob=x,size=1)))
     } else if (modelType == "Regression") {

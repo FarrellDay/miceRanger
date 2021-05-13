@@ -73,14 +73,22 @@ runIterations <- function(
         if(verbose) cat(" |",impVar)
         missIndx <- naWhere[,impVar]
         returnProb <- modelTypes[impVar] == "Classification" & valueSelector[impVar] == "meanMatch"
-        model <- ranger(
-          data = dats[!missIndx,algCols,with=FALSE]
+        
+        # Compile this list of arguments so we can set default behavior, which
+        # can be overwritten by dots method. Arguments in list after dots are
+        # overwritable default behavior.
+        rangerArgs <- list(
+            data = dats[!missIndx,algCols,with=FALSE]
           , dependent.variable.name = impVar
           , importance = "impurity"
           , probability = returnProb
           , verbose = FALSE
           , ...
+          , max.depth = 10 # Helps with memory reduction
         )
+        rangerArgs <- rangerArgs[!duplicated(names(rangerArgs))]
+        
+        model <- do.call(ranger,rangerArgs)
         
         # Keep the model if this is the last iteration.
         if (iter == maxiter & returnModels) dsMod[[impVar]] <- model
