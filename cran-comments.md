@@ -1,12 +1,12 @@
 cran-comments
 ================
 
-## miceRanger 1.4.0
+## miceRanger 1.5.0
 Detailed Package Info: https://github.com/farrellday/miceRanger
 
 
 ### Changes
-Changed default behavior so that it uses less memory.
+Bug fix in 1 function.
 
 ### Test Environments  
 * Local Windows 10 x64, R 3.6.2  

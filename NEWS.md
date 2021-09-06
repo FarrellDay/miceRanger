@@ -7,6 +7,9 @@ Accepted by CRAN: 2020-01-19
 
 ## Package Updates  
 
+#### 1.5.0
+Fixed a bug that wouldn't allow data.frames to be imputed.
+
 #### 1.4.0
 Default max.depth parameter for ranger is now 10. Originally, this was the default
 unlimited. However, this causes ranger models to take up a lot of memory. Setting
