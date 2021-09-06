@@ -46,13 +46,16 @@ impute <- function(
   if (!miceObj$callParams$returnModels) stop("returnModels must be set to TRUE to impute new data.")
   if (any(datasets > miceObj$callParams$m)) stop("dataset specified was never created in miceObj")
   
-  # Extract data from miceObj and set up variables.
+  data = copy(data)
+  setDT(data)
   dat <- sapply(
       as.character(datasets)
     , function(x) copy(data)
     , USE.NAMES = TRUE
     , simplify = FALSE
   )
+  
+  # Extract data from miceObj and set up variables.
   ds <- crayon::make_style("#4B8E78")
   m <- miceObj$callParams$m
   vars <- miceObj$callParams$vars
