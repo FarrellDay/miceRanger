@@ -34,7 +34,8 @@ completeData <- function(
     , function(x) {
       dat <- copy(dat)
       for (v in varn) {
-        dat[miceObj$naWhere[,v],(v) := miceObj$finalImps[[x]][[v]]]
+        imps = miceObj$finalImps[[x]][[v]]
+        dat[miceObj$naWhere[,v],(v) := imps]
       }
       return(dat)
     }

@@ -7,6 +7,9 @@ Accepted by CRAN: 2020-01-19
 
 ## Package Updates  
 
+#### 1.5.1
+Fixed a bug in data.table scoping which caused a rare error.
+
 #### 1.5.0
 Fixed a bug that wouldn't allow data.frames to be imputed.
 
