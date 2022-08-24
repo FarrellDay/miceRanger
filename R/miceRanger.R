@@ -287,7 +287,7 @@ miceRanger <- function(
       paste0(
         "Evaluation failed with error <",as.character(datSetList[errorIndx][[1]])
         ,">. This is probably our fault - please open an issue at https://github.com/FarrellDay/miceRanger/issues"
-        ," with a reproduceable example."
+        ," with a reproducible example."
       )
     )
   }
